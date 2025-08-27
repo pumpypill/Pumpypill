@@ -25,31 +25,18 @@ const mimeTypes = {
 
 http.createServer((req, res) => {
   let urlPath = req.url.split('?')[0];
-  if (fs.existsSync(path.join(ROOT, urlPath)) && fs.statSync(path.join(ROOT, urlPath)).isDirectory()) {
-    res.writeHead(301, { Location: urlPath + '/' });
-    res.end();
-    return;
+  if (urlPath === '/' || urlPath === '') {
+    urlPath = '/index.html'; // Serve the root index.html
   }
-  let filePath;
-  // Rewrite /js/ and /assets/ to /1.7/js/ and /assets/
-  if (urlPath.startsWith('/js/')) {
-    filePath = path.join(ROOT, '1.7', urlPath);
-  } else if (urlPath.startsWith('/assets/')) {
-    filePath = path.join(ROOT, urlPath);
-  } else if (urlPath === '/' || urlPath === '') {
-    filePath = path.join(ROOT, 'index.html'); // Serve index.html for GitHub Pages
-  } else if (urlPath.startsWith('/1.7/')) {
-    filePath = path.join(ROOT, urlPath);
-  } else {
-    // Default: try to serve from the root directory for relative paths
-    filePath = path.join(ROOT, urlPath);
-  }
+
+  const filePath = path.join(ROOT, urlPath);
   fs.stat(filePath, (err, stats) => {
     if (err || !stats.isFile()) {
       res.writeHead(404, { 'Content-Type': 'text/plain' });
       res.end('404 Not Found');
       return;
     }
+
     const ext = path.extname(filePath).toLowerCase();
     res.writeHead(200, { 'Content-Type': mimeTypes[ext] || 'application/octet-stream' });
     fs.createReadStream(filePath).pipe(res);
