@@ -37,12 +37,12 @@ http.createServer((req, res) => {
   } else if (urlPath.startsWith('/assets/')) {
     filePath = path.join(ROOT, urlPath);
   } else if (urlPath === '/' || urlPath === '') {
-    filePath = path.join(ROOT, 'index.html'); // Serve index.html for GitHub Pages
+    filePath = path.join(ROOT, '1.7', '1.6.6.html');
   } else if (urlPath.startsWith('/1.7/')) {
     filePath = path.join(ROOT, urlPath);
   } else {
-    // Default: try to serve from the root directory for relative paths
-    filePath = path.join(ROOT, urlPath);
+    // Default: try to serve from /1.7/ for relative paths
+    filePath = path.join(ROOT, '1.7', urlPath);
   }
   fs.stat(filePath, (err, stats) => {
     if (err || !stats.isFile()) {

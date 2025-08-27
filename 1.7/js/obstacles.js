@@ -264,6 +264,3 @@ export class Obstacles {
         }
     }
 }
-        }
-    }
-}
