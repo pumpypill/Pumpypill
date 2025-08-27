@@ -15,6 +15,9 @@ export class PerformanceMonitor {
         this.frameTimeHistory = new Array(60).fill(0);
         this.frameTimeIndex = 0; // Tracks the current position in the circular buffer
         this.frameTimeVariance = 0;
+
+        this.resetInterval = 300000; // Reset buffer every 5 minutes (300,000ms)
+        this.lastResetTime = 0; // Track the last reset timestamp
     }
 
     reset() {
@@ -37,6 +40,13 @@ export class PerformanceMonitor {
     update(timestamp) {
         if (!this.enabled || typeof timestamp !== 'number') return;
         this.frameTime = timestamp - this.lastTime;
+
+        // Periodically reset the circular buffer
+        if (timestamp - this.lastResetTime >= this.resetInterval) {
+            this.frameTimeHistory.fill(0);
+            this.frameTimeIndex = 0;
+            this.lastResetTime = timestamp;
+        }
 
         // Update the circular buffer
         this.frameTimeHistory[this.frameTimeIndex] = this.frameTime;

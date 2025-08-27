@@ -18,12 +18,9 @@ export class DifficultyManager {
     }
 
     updateDifficulty() {
-        this.speed = Math.min(3.5, 1.8 + this.level * 0.1);
-        this.pipeGap = Math.max(160, this.OBSTACLES.BASE_GAP - this.level * 8);
-        this.pipeSpacing = Math.max(250, this.OBSTACLES.BASE_SPACING - this.level * 15);
-        if (this.gameState) {
-            this.gameState.difficulty = this; // Ensure gameState has access to difficulty
-        }
+        this.speed = Math.min(4.0, 1.8 + this.level * 0.12); // Slightly faster speed progression
+        this.pipeGap = Math.max(150, this.OBSTACLES.BASE_GAP - this.level * 10); // Slightly tighter gaps
+        this.pipeSpacing = Math.max(240, this.OBSTACLES.BASE_SPACING - this.level * 15);
     }
 
     levelUp() {

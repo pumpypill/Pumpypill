@@ -41,8 +41,8 @@ export class Obstacles {
     }
 
     generateObstacle(x) {
-        // Every 5-8 obstacles, switch patterns
-        if (this.obstacleCount % (5 + Math.floor(Math.random() * 4)) === 0) {
+        // Every 4-6 obstacles, switch patterns (more frequent changes)
+        if (this.obstacleCount % (4 + Math.floor(Math.random() * 3)) === 0) {
             this.switchPattern();
         }
 
@@ -56,7 +56,7 @@ export class Obstacles {
         // Adjust gap size for special patterns
         let currentGap = this.pipeGap;
         if (this.currentPattern === 'narrow') {
-            currentGap = Math.max(this.pipeGap * 0.8, this.OBSTACLES.MIN_GAP + 20); // Add buffer for narrow pattern
+            currentGap = Math.max(this.pipeGap * 0.75, this.OBSTACLES.MIN_GAP + 10); // Tighter gap for narrow pattern
         } else if (Math.random() < 0.1) {
             currentGap = this.pipeGap * 1.2; // Slightly wider gap as a breather
         }

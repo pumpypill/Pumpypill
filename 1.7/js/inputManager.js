@@ -8,26 +8,30 @@ export class InputManager {
         this.handleJump = handleJump;
         this.characterManager = characterManager;
         this.lastInputTime = 0;
-        this.debounceTime = 120; // ms between inputs
+        this.debounceTime = 100; // Reduced debounce time for better responsiveness
         
+        // Store bound handlers for removal
+        this._handleKeyDown = this.handleKeyDown.bind(this);
+        this._handleClick = this.handleClick.bind(this);
+        this._handleTouch = this.handleTouch.bind(this);
         this.setupEventListeners();
     }
     
     setupEventListeners() {
         // Keyboard input (spacebar)
-        document.addEventListener('keydown', this.handleKeyDown.bind(this));
+        document.addEventListener('keydown', this._handleKeyDown);
         
         // Mouse input
-        this.canvas.addEventListener('click', this.handleClick.bind(this));
+        this.canvas.addEventListener('click', this._handleClick);
         
         // Touch input
-        this.canvas.addEventListener('touchstart', this.handleTouch.bind(this));
+        this.canvas.addEventListener('touchstart', this._handleTouch);
     }
     
     removeEventListeners() {
-        document.removeEventListener('keydown', this.handleKeyDown.bind(this));
-        this.canvas.removeEventListener('click', this.handleClick.bind(this));
-        this.canvas.removeEventListener('touchstart', this.handleTouch.bind(this));
+        document.removeEventListener('keydown', this._handleKeyDown);
+        this.canvas.removeEventListener('click', this._handleClick);
+        this.canvas.removeEventListener('touchstart', this._handleTouch);
     }
     
     handleKeyDown(e) {

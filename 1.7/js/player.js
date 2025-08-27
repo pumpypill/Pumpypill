@@ -29,8 +29,8 @@ export class Player {
     }
 
     update(gravity, maxFall) {
-        this.vy += gravity;
-        this.vy = Math.min(this.vy, maxFall);
+        this.vy += gravity * 1.1; // Slightly stronger gravity for more challenge
+        this.vy = Math.min(this.vy, maxFall * 1.2); // Allow faster falling
         this.y += this.vy;
 
         // Calculate target rotation based on vertical velocity
@@ -47,7 +47,7 @@ export class Player {
 
     jump(jumpStrength) {
         this.jumpCount++;
-        let adjustedJumpStrength = jumpStrength;
+        let adjustedJumpStrength = jumpStrength * 1.05; // Slightly stronger jump
 
         // Apply a slight boost for the second jump
         if (this.jumpCount === 2) {

@@ -56,7 +56,7 @@ export class GameState {
     }
 
     incrementScore(amount = 1) {
-        this.score += Math.ceil(amount * (1 + (this.difficulty?.level || 0) * 0.1)); // Ensure difficulty is defined
+        this.score += Math.ceil(amount * (1 + (this.difficulty?.level || 0) * 0.15)); // Increased level multiplier
         return this.score;
     }
 
