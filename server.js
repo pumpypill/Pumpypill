@@ -6,7 +6,7 @@ const fs = require('fs');
 const path = require('path');
 
 const PORT = 8080;
-const ROOT = path.join(__dirname);
+const ROOT = path.join(__dirname, '1.7'); // Point to the 1.7 subdirectory where game files are located
 
 const mimeTypes = {
   '.html': 'text/html',
@@ -26,12 +26,15 @@ const mimeTypes = {
 http.createServer((req, res) => {
   let urlPath = req.url.split('?')[0];
   if (urlPath === '/' || urlPath === '') {
-    urlPath = '/index.html'; // Serve the root index.html
+    urlPath = '/1.6.6.html'; // Default to 1.6.6.html
   }
 
   const filePath = path.join(ROOT, urlPath);
+  console.log(`Requesting: ${filePath}`);
+  
   fs.stat(filePath, (err, stats) => {
     if (err || !stats.isFile()) {
+      console.error(`404: ${filePath} - Error: ${err ? err.message : 'Not a file'}`);
       res.writeHead(404, { 'Content-Type': 'text/plain' });
       res.end('404 Not Found');
       return;
