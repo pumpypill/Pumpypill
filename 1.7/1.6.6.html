@@ -4,117 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pumpy Pill</title>
-    <style>
-        body { 
-            margin: 0; 
-            background: #0d1421; 
-            color: white; 
-            font-family: "SF Pro Display", "Segoe UI", system-ui, sans-serif; 
-            text-align: center; 
-            overflow: hidden;
-            user-select: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-        }
-        canvas { 
-            display: block; 
-            margin: 0 auto; 
-            background: #0d1421; 
-            border: 2px solid #1e2329; 
-            border-radius: 8px; 
-            box-shadow: 0 0 20px rgba(0,0,0,0.5); 
-            cursor: pointer;
-        }
-        .instructions {
-            position: relative;
-            bottom: auto;
-            left: auto;
-            transform: none;
-            color: #888;
-            font-size: 12px;
-            margin-top: 16px;
-            text-align: center;
-        }
-        .character-select {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin: 20px 0;
-        }
-        .character-option {
-            width: 60px;
-            height: 60px;
-            border: 2px solid #1e2329;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .character-option.selected {
-            border-color: #00d4ff;
-            box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
-        }
-        .character-pill {
-            width: 20px;
-            height: 40px;
-            position: relative;
-        }
-        header {
-            width: 100%;
-            background: #131a26;
-            color: #00d4ff;
-            font-size: 2rem;
-            font-weight: bold;
-            padding: 18px 0 12px 0;
-            letter-spacing: 1px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            text-align: center;
-            z-index: 10;
-        }
-        footer {
-            width: 100%;
-            background: #131a26;
-            color: #b2b5be;
-            font-size: 14px;
-            padding: 14px 0 10px 0;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            text-align: center;
-            z-index: 10;
-            box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
-        }
-        main {
-            flex: 1 0 auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 100vw;
-        }
-        .canvas-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            /* Remove margin-top, margin-bottom */
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
         <img src="./assets/characters/cupsey.png" alt="Cupsey Logo" style="height:48px;width:auto;vertical-align:middle;display:inline-block;">
     </header>
     <main>
-        <div class="canvas-container">
-            <canvas id="gameCanvas" width="800" height="600"></canvas>
-        </div>
-        <div class="instructions">
-            <p>Time your jumps carefully to navigate the obstacles!</p>
+        <h1 style="text-align:center;margin-bottom:16px;">Pumpy Pill</h1>
+        <div class="content-container">
+            <div class="game-container">
+                <div class="canvas-container">
+                    <canvas id="gameCanvas" width="800" height="600"></canvas>
+                </div>
+                <div class="instructions">
+                    <p>Time your jumps carefully to navigate the obstacles!</p>
+                </div>
+            </div>
+            <div class="info-container">
+                <h2>Game Instructions</h2>
+                <p>Click or tap to make your character jump. Avoid obstacles and collect points to increase your score!</p>
+                <p>Each level increases the difficulty but also gives you more rewards. Watch for special patterns that may appear!</p>
+            </div>
+            <div class="roadmap-container">
+                <h2>Roadmap</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            </div>
+            <div class="roadmap-container">
+                <h2>Our Mission</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            </div>
+            <div class="roadmap-container">
+                <h2>About Us</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            </div>
+            <div class="roadmap-container">
+                <h2>Contact Us</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            </div>
+            <div class="roadmap-container">
+                <h2>Bug Reports and Feature Requests</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            </div>            
         </div>
     </main>
     <footer>
@@ -124,11 +55,11 @@
     // Simple error tracking
     window.addEventListener('error', function(e) {
         console.error('Runtime error:', e.error.message);
-    });
+    }, {passive: true});
 
     window.addEventListener('unhandledrejection', function(e) {
         console.error('Unhandled promise rejection:', e.reason);
-    });
+    }, {passive: true});
 
     import { Player } from "./js/player.js";
     import { Obstacles } from "./js/obstacles.js";
@@ -295,8 +226,10 @@
     const debugMode = false; // Set to false for production builds
     performanceMonitor.toggle(debugMode);
 
-    // Load level up sound
-    const levelUpSound = new Audio('./assets/sounds/level_up.mp3');
+    // Preload level up sound for better performance
+    const levelUpSound = new Audio();
+    levelUpSound.preload = 'auto';
+    levelUpSound.src = './assets/sounds/level_up.mp3';
 
     function update(timestamp) {
         // Update performance monitor
@@ -439,18 +372,31 @@
     function drawVolumeBars(ctx, canvas, barCount = 48, barHeight = 40) {
         const barWidth = canvas.width / barCount;
         const baseY = canvas.height;
+        
+        // Pre-calculate bar heights and reuse
+        const heights = [];
         for (let i = 0; i < barCount; i++) {
-            // Static random height per bar (seeded by index)
-            const height = Math.floor(
+            heights[i] = Math.floor(
                 (Math.sin(i * 2.1) + 1) * 0.5 * (barHeight * 0.7) +
                 (Math.abs(Math.cos(i * 1.7)) * (barHeight * 0.3))
             );
-            // Alternate color, mostly green/red, muted and semi-transparent
-            const isRed = i % 2 === 0;
-            ctx.globalAlpha = 0.18;
-            ctx.fillStyle = isRed ? "#e05a5a" : "#3fa97c";
-            ctx.fillRect(i * barWidth, baseY - height, barWidth - 1, height);
         }
+        
+        // Batch render all red bars first, then green bars
+        ctx.globalAlpha = 0.18;
+        
+        // Draw all red bars
+        ctx.fillStyle = "#e05a5a";
+        for (let i = 0; i < barCount; i += 2) {
+            ctx.fillRect(i * barWidth, baseY - heights[i], barWidth - 1, heights[i]);
+        }
+        
+        // Draw all green bars
+        ctx.fillStyle = "#3fa97c";
+        for (let i = 1; i < barCount; i += 2) {
+            ctx.fillRect(i * barWidth, baseY - heights[i], barWidth - 1, heights[i]);
+        }
+        
         ctx.globalAlpha = 1.0;
     }
 

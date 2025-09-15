@@ -29,8 +29,9 @@ export class Player {
     }
 
     update(gravity, maxFall) {
-        this.vy += gravity * 1.1; // Slightly stronger gravity for more challenge
-        this.vy = Math.min(this.vy, maxFall * 1.2); // Allow faster falling
+        // Slightly reduced gravity and fall speed for improved forgivability
+        this.vy += gravity * 0.95; // More forgiving gravity
+        this.vy = Math.min(this.vy, maxFall * 1.05); // Slightly slower max fall
         this.y += this.vy;
 
         // Calculate target rotation based on vertical velocity
