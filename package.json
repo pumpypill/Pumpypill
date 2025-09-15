@@ -1,0 +1,22 @@
+{
+  "name": "pump-1.7",
+  "version": "1.0.0",
+  "description": "Pumpy Pills is a fun and engaging game where you navigate volatile crypto markets. Play it live on [GitHub Pages](https://pumpypill.github.io/Pumpypill/).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "live-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pumpypill/Pumpypill.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/pumpypill/Pumpypill/issues"
+  },
+  "homepage": "https://github.com/pumpypill/Pumpypill#readme"
+}
