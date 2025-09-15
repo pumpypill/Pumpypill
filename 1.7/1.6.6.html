@@ -77,17 +77,17 @@
 
     // Game constants
     var PHYSICS = {
-        GRAVITY: 0.12,
-        JUMP: -3.5,
-        MAX_FALL: 4,
-        BIRD_RADIUS: 24
+        GRAVITY: 0.10, // Gravity is slightly reduced for slower falling, ensuring smoother gameplay.
+        JUMP: -3.3, // Jump strength is slightly reduced to balance the reduced gravity.
+        MAX_FALL: 3.8, // Reduced from 4 to limit the maximum fall speed for better control.
+        BIRD_RADIUS: 24 // Radius remains unchanged, as it is consistent with the character size.
     };
 
     var OBSTACLES = {
         WIDTH: 70,
-        BASE_GAP: 180,
+        BASE_GAP: 200, // Increased from 180 to slightly widen the vertical gap
         BASE_SPACING: 300,
-        MIN_GAP: 140
+        MIN_GAP: 160 // Increased from 140 to ensure a minimum playable gap
     };
 
     var CHART = {
@@ -168,7 +168,7 @@
 
     // Player (using Player class)
     var bird = new Player(
-        canvas.width * 0.25,
+        canvas.width * 0.35, // Changed from 0.25 to 0.35 to move character more to the center
         canvas.height / 2,
         characterManager.getSelectedCharacter(),
         PHYSICS
@@ -373,28 +373,38 @@
         const barWidth = canvas.width / barCount;
         const baseY = canvas.height;
         
-        // Pre-calculate bar heights and reuse
-        const heights = [];
-        for (let i = 0; i < barCount; i++) {
-            heights[i] = Math.floor(
-                (Math.sin(i * 2.1) + 1) * 0.5 * (barHeight * 0.7) +
-                (Math.abs(Math.cos(i * 1.7)) * (barHeight * 0.3))
-            );
+        // Pre-calculate all bar data once
+        if (!drawVolumeBars.cachedBars || drawVolumeBars.cachedBars.length !== barCount) {
+            drawVolumeBars.cachedBars = [];
+            for (let i = 0; i < barCount; i++) {
+                drawVolumeBars.cachedBars[i] = {
+                    height: Math.floor(
+                        (Math.sin(i * 2.1) + 1) * 0.5 * (barHeight * 0.7) +
+                        (Math.abs(Math.cos(i * 1.7)) * (barHeight * 0.3))
+                    ),
+                    isRed: i % 2 === 0
+                };
+            }
         }
         
-        // Batch render all red bars first, then green bars
         ctx.globalAlpha = 0.18;
         
-        // Draw all red bars
+        // Draw red bars
         ctx.fillStyle = "#e05a5a";
-        for (let i = 0; i < barCount; i += 2) {
-            ctx.fillRect(i * barWidth, baseY - heights[i], barWidth - 1, heights[i]);
+        for (let i = 0; i < barCount; i++) {
+            const bar = drawVolumeBars.cachedBars[i];
+            if (bar.isRed) {
+                ctx.fillRect(i * barWidth, baseY - bar.height, barWidth - 1, bar.height);
+            }
         }
         
-        // Draw all green bars
+        // Draw green bars
         ctx.fillStyle = "#3fa97c";
-        for (let i = 1; i < barCount; i += 2) {
-            ctx.fillRect(i * barWidth, baseY - heights[i], barWidth - 1, heights[i]);
+        for (let i = 0; i < barCount; i++) {
+            const bar = drawVolumeBars.cachedBars[i];
+            if (!bar.isRed) {
+                ctx.fillRect(i * barWidth, baseY - bar.height, barWidth - 1, bar.height);
+            }
         }
         
         ctx.globalAlpha = 1.0;
@@ -403,7 +413,7 @@
     function resetGame() {
         // Re-instantiate player to avoid stale references
         bird = new Player(
-            canvas.width * 0.25,
+            canvas.width * 0.35, // Changed from 0.25 to 0.35 to match the initial position
             canvas.height / 2,
             characterManager.getSelectedCharacter(),
             PHYSICS

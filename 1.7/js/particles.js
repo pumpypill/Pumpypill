@@ -73,36 +73,20 @@ export class Particles {
         // Save context state before modifications
         ctx.save();
         
-        // Use a fixed particle size for better performance
-        const particleSize = 3;
+        // Use beginPath once for all circles
+        ctx.beginPath();
         
-        // Group particles by color for fewer fillStyle changes (a major performance bottleneck)
-        const particlesByColor = {};
-        
-        // Sort particles into color groups
+        // Draw all particles in a single path for better performance
         for (let i = 0; i < this.particles.length; i++) {
             const particle = this.particles[i];
-            if (!particlesByColor[particle.color]) {
-                particlesByColor[particle.color] = [];
-            }
-            particlesByColor[particle.color].push(particle);
+            ctx.globalAlpha = Math.max(0, particle.life / 30);
+            ctx.fillStyle = particle.color;
+            ctx.moveTo(particle.x + 3, particle.y); // Move to edge of circle
+            ctx.arc(particle.x, particle.y, 3, 0, TWO_PI);
+            ctx.fill();
         }
         
-        // Draw particles by color groups
-        for (const color in particlesByColor) {
-            ctx.fillStyle = color;
-            const colorGroup = particlesByColor[color];
-            
-            for (let i = 0; i < colorGroup.length; i++) {
-                const particle = colorGroup[i];
-                ctx.globalAlpha = Math.max(0, particle.life / 30); // Fade out as life decreases
-                ctx.beginPath();
-                ctx.arc(particle.x, particle.y, particleSize, 0, TWO_PI);
-                ctx.fill();
-            }
-        }
-        
-        // Restore context state
-        ctx.restore();
+    // Restore context state
+    ctx.restore();
     }
 }

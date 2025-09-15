@@ -11,16 +11,16 @@ export class DifficultyManager {
         this.level = 1;
         this.obstaclesInLevel = 0;
         this.obstaclesNeeded = 3;
-        this.speed = 1.8;
+        this.speed = 1.4; // Reduced from 1.6 for slower initial speed
         this.pipeGap = this.OBSTACLES.BASE_GAP;
         this.pipeSpacing = this.OBSTACLES.BASE_SPACING;
         this.updateDifficulty();
     }
 
     updateDifficulty() {
-        this.speed = Math.min(4.0, 1.8 + this.level * 0.12); // Slightly faster speed progression
-        this.pipeGap = Math.max(150, this.OBSTACLES.BASE_GAP - this.level * 10); // Slightly tighter gaps
-        this.pipeSpacing = Math.max(240, this.OBSTACLES.BASE_SPACING - this.level * 15);
+        this.speed = Math.min(3.2, 1.4 + this.level * 0.08); // Reduced max speed and per-level increment
+        this.pipeGap = Math.max(150, this.OBSTACLES.BASE_GAP - this.level * 10 + 10); // Slightly wider gap (+10px)
+        this.pipeSpacing = Math.max(240, this.OBSTACLES.BASE_SPACING - this.level * 15); // Fixed spacing, decreases with level
     }
 
     levelUp() {

@@ -1,0 +1,12 @@
+{
+  "name": "pump-dev-server",
+  "version": "1.0.0",
+  "description": "Simple dev server for pump website/game",
+  "main": "dev-server.js",
+  "scripts": {
+    "start": "node dev-server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

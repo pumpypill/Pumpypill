@@ -11,7 +11,7 @@ export class Player {
         this.character = character;
         this.physics = physics;
         this.jumpCount = 0; // Track consecutive jumps
-        this.jumpBoost = 0.2; // Slight boost for the second jump
+        this.jumpBoost = 0.12; // Reduced from 0.2 to lessen the double jump boost
         this.targetRotation = 0; // Target rotation for smoothing
         this.rotationLerpFactor = 0.1; // Default smoothing factor
         this.jumpRotationBoost = 0.3; // Temporary boost for rotation responsiveness

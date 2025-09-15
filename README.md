@@ -1,6 +1,6 @@
 # Pumpy Pills
 
-Pumpy Pills is a fun and engaging game where you navigate volatile crypto markets. Play it live on [GitHub Pages](https://pumpypill.github.io/Pumpypill/).
+Pumpy Pill is a fun and engaging game where you navigate volatile crypto markets. Play it live on pumpypill.fun
 
 ## How to Play
 - Use the SPACEBAR or click to jump.
