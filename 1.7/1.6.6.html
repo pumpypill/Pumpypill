@@ -13,6 +13,11 @@
             text-align: center; 
             overflow: hidden;
             user-select: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
         }
         canvas { 
             display: block; 
@@ -24,12 +29,14 @@
             cursor: pointer;
         }
         .instructions {
-            position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
+            position: relative;
+            bottom: auto;
+            left: auto;
+            transform: none;
             color: #888;
             font-size: 12px;
+            margin-top: 16px;
+            text-align: center;
         }
         .character-select {
             display: flex;
@@ -83,16 +90,18 @@
             box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
         }
         main {
-            min-height: 100vh;
+            flex: 1 0 auto;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
-            padding-bottom: 60px; /* space for footer */
+            justify-content: center;
+            width: 100vw;
         }
         .canvas-container {
-            margin-top: 24px;
-            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Remove margin-top, margin-bottom */
         }
     </style>
 </head>
@@ -105,11 +114,11 @@
             <canvas id="gameCanvas" width="800" height="600"></canvas>
         </div>
         <div class="instructions">
-            <p>Time your jumps carefully to navigate the obstacles!</p> <!-- Added motivational instruction -->
+            <p>Time your jumps carefully to navigate the obstacles!</p>
         </div>
     </main>
     <footer>
-        &copy; 2024 Pumpy Pills &mdash; <a href="https://github.com/pumpypill/Pumpypill" style="color:#00d4ff;text-decoration:none;">GitHub</a>
+        THIS IS JUST A BETA. NO TOKEN AT THIS TIME
     </footer>
     <script type="module">
     // Simple error tracking
@@ -286,6 +295,9 @@
     const debugMode = false; // Set to false for production builds
     performanceMonitor.toggle(debugMode);
 
+    // Load level up sound
+    const levelUpSound = new Audio('./assets/sounds/level_up.mp3');
+
     function update(timestamp) {
         // Update performance monitor
         performanceMonitor.update(timestamp);
@@ -334,6 +346,13 @@
                     gameState.updatePortfolio(Math.floor(750 * (1 + difficulty.level * 0.08)));
                     particles.add(bird.x, bird.y, '#26a69a');
                     if (difficulty.levelUp()) {
+                        // Play level up sound
+                        try {
+                            levelUpSound.currentTime = 0;
+                            levelUpSound.play();
+                        } catch (e) {
+                            // Ignore play errors (e.g., user gesture not yet given)
+                        }
                         gameState.updatePortfolio(difficulty.level * 1500);
                         particles.add(bird.x, bird.y, '#ffd700');
                         particles.add(bird.x, bird.y, '#00d4ff');
@@ -351,6 +370,9 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = '#0d1421';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // --- Draw volume bar floor decoration ---
+        drawVolumeBars(ctx, canvas, 48, 40);
 
         // Draw grid
         ctx.strokeStyle = '#1a1f2e';
@@ -411,6 +433,25 @@
                 performanceMonitor.getFrameTimeVariance().toFixed(1)
             );
         }
+    }
+
+    // --- Volume Bar Floor Decoration ---
+    function drawVolumeBars(ctx, canvas, barCount = 48, barHeight = 40) {
+        const barWidth = canvas.width / barCount;
+        const baseY = canvas.height;
+        for (let i = 0; i < barCount; i++) {
+            // Static random height per bar (seeded by index)
+            const height = Math.floor(
+                (Math.sin(i * 2.1) + 1) * 0.5 * (barHeight * 0.7) +
+                (Math.abs(Math.cos(i * 1.7)) * (barHeight * 0.3))
+            );
+            // Alternate color, mostly green/red, muted and semi-transparent
+            const isRed = i % 2 === 0;
+            ctx.globalAlpha = 0.18;
+            ctx.fillStyle = isRed ? "#e05a5a" : "#3fa97c";
+            ctx.fillRect(i * barWidth, baseY - height, barWidth - 1, height);
+        }
+        ctx.globalAlpha = 1.0;
     }
 
     function resetGame() {

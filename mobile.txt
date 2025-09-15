@@ -1,0 +1,82 @@
+# Mobile Playability Plan for Pumpy Pills
+
+## 1. Responsive Canvas & Layout
+
+- **Action:**  
+  Make the game canvas scale to fit any mobile screen size while maintaining aspect ratio.
+- **Implementation:**  
+  - Use `window.innerWidth` and `window.innerHeight` to set canvas size.
+  - Add CSS to make the canvas fill the viewport and prevent scrolling.
+  - Listen for `resize` events and adjust canvas accordingly.
+
+## 2. Touch Controls
+
+- **Action:**  
+  Ensure all game actions are accessible via touch.
+- **Implementation:**  
+  - Replace or supplement keyboard controls with large, on-screen buttons (e.g., "Jump", "Switch", "Pause").
+  - Use `touchstart` and `touchend` events for input.
+  - Make buttons visually distinct and easy to tap.
+
+## 3. UI Scaling
+
+- **Action:**  
+  Scale UI elements (text, buttons, overlays) for readability on small screens.
+- **Implementation:**  
+  - Use relative units (vw, vh, %) for font sizes and button dimensions.
+  - Test on various device sizes.
+
+## 4. Orientation Handling
+
+- **Action:**  
+  Support both portrait and landscape modes, or lock to the optimal one.
+- **Implementation:**  
+  - Detect orientation and adjust layout.
+  - Optionally, prompt user to rotate device for best experience.
+
+## 5. Performance Optimization
+
+- **Action:**  
+  Optimize for lower-powered mobile CPUs/GPUs.
+- **Implementation:**  
+  - Reduce animation frame rate if needed.
+  - Minimize draw calls and asset sizes.
+  - Test for battery and thermal impact.
+
+## 7. Prevent Unwanted Scrolling
+
+- **Action:**  
+  Prevent the browser from scrolling or zooming during gameplay.
+- **Implementation:**  
+  - Use `touch-action: none;` CSS on the canvas.
+  - Prevent default on touch events.
+
+## 8. Testing
+
+- **Action:**  
+  Test on a variety of devices and browsers (iOS Safari, Android Chrome, etc.).
+- **Implementation:**  
+  - Check for input accuracy, scaling, and performance.
+  - Fix any device-specific issues.
+
+---
+
+## Summary Checklist
+
+- [ ] Responsive canvas and UI
+- [ ] On-screen touch controls
+- [ ] Scalable, readable UI
+- [ ] Orientation support
+- [ ] Performance optimized for mobile
+- [ ] Audio controls
+- [ ] Prevent scrolling/zooming
+- [ ] Multi-device testing
+
+---
+
+## Next Steps
+
+1. Update HTML/CSS for responsive design.
+2. Add touch controls and UI scaling.
+3. Test and iterate on real devices.
+4. Gather feedback and polish.

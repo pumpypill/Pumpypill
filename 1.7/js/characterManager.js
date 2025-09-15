@@ -6,30 +6,45 @@ export class CharacterManager {
         this.characters = characters;
         this.canvas = canvas;
         this.gameState = gameState;
-        this.selectedCharacter = characters[0]; // Default to first character
         
-        // Set initial character in game state
-        if (this.gameState) {
-            this.gameState.setSelectedCharacter(this.selectedCharacter.name);
+        // Ensure characters array is not empty before accessing
+        if (this.characters && this.characters.length > 0) {
+            this.selectedCharacter = characters[0]; // Default to first character
+            
+            // Set initial character in game state
+            if (this.gameState) {
+                this.gameState.setSelectedCharacter(this.selectedCharacter.name);
+            }
+        } else {
+            console.error("CharacterManager: No characters provided.");
         }
     }
 
     getSelectedCharacter() {
+        // Always ensure we have a valid selected character
+        if (!this.selectedCharacter && this.characters && this.characters.length > 0) {
+            this.selectedCharacter = this.characters[0];
+            // Update game state with selection
+            if (this.gameState) {
+                this.gameState.setSelectedCharacter(this.selectedCharacter.name);
+            }
+        }
         return this.selectedCharacter;
     }
 
     handleSelection(x, y) {
         // Get positioning based on game state
         const isGameOver = this.gameState ? this.gameState.isGameOver() : false;
-        const centerY = isGameOver ? this.canvas.height / 2 + 100 : this.canvas.height / 2;
+        const centerY = isGameOver ? this.canvas.height / 2 + 150 : this.canvas.height / 2 + 80; // Match the drawing position
+        const charSize = 60; // Use fixed size to match drawing
         const startX = this.canvas.width / 2 - (this.characters.length * 70) / 2;
 
         for (let i = 0; i < this.characters.length; i++) {
             const char = this.characters[i];
             const charX = startX + i * 70;
-            const charY = centerY + 20;
+            const charY = centerY; // Use the same centerY as in drawSelection
 
-            if (x >= charX && x <= charX + 60 && y >= charY && y <= charY + 60) {
+            if (x >= charX && x <= charX + charSize && y >= charY && y <= charY + charSize) {
                 // Only update if character actually changed
                 if (this.selectedCharacter !== char) {
                     this.selectedCharacter = char;
@@ -48,37 +63,49 @@ export class CharacterManager {
     }
 
     drawSelection(ctx) {
+        // Save context state
+        ctx.save();
+        
         // Position based on game state
         const isGameOver = this.gameState ? this.gameState.isGameOver() : false;
-        const centerY = isGameOver ? this.canvas.height / 2 + 100 : this.canvas.height / 2;
+        const centerY = isGameOver ? this.canvas.height / 2 + 150 : this.canvas.height / 2 + 80; // Adjusted to avoid text overlay
         this._drawSelectionAt(ctx, centerY);
-    }
 
-    // Internal method to draw at specific Y position
+        // Draw selected character feedback below character manager
+        if (this.selectedCharacter && this.gameState) {
+            ctx.font = 'bold 16px "SF Pro Display", sans-serif';
+            ctx.fillStyle = '#26a69a';
+            ctx.textAlign = 'center';
+            ctx.fillText(`Selected: ${this.selectedCharacter.name}`, this.canvas.width / 2, centerY + 100); // Positioned below character manager
+        }
+        
+        // Restore context state
+        ctx.restore();
+    }
     _drawSelectionAt(ctx, centerY) {
         const startX = this.canvas.width / 2 - (this.characters.length * 70) / 2;
 
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '16px "SF Pro Display", sans-serif';
-        const selectText = 'Select your character:';
-        const textWidth = ctx.measureText(selectText).width;
-        ctx.fillText(selectText, this.canvas.width / 2 - textWidth / 2, centerY);
+        // Ensure we have a valid selectedCharacter
+        if (!this.selectedCharacter && this.characters.length > 0) {
+            this.selectedCharacter = this.characters[0];
+            if (this.gameState) {
+                this.gameState.setSelectedCharacter(this.selectedCharacter.name);
+            }
+        }
 
         for (let i = 0; i < this.characters.length; i++) {
             const char = this.characters[i];
             const x = startX + i * 70;
-            const y = centerY + 20;
-            
-            // Draw selection background
+            const y = centerY;
+
             ctx.fillStyle = char === this.selectedCharacter ? 'rgba(0, 212, 255, 0.2)' : 'rgba(30, 35, 41, 0.5)';
             ctx.fillRect(x, y, 60, 60);
-            
-            // Draw character preview with fallback
+
             if (char.loaded) {
                 ctx.drawImage(
                     char.image,
-                    x + (60 - char.width)/2,
-                    y + (60 - char.height)/2,
+                    x + (60 - char.width) / 2,
+                    y + (60 - char.height) / 2,
                     char.width,
                     char.height
                 );
@@ -89,8 +116,7 @@ export class CharacterManager {
                 ctx.lineWidth = 2;
                 ctx.strokeRect(x + 10, y + 10, 40, 40);
             }
-            
-            // Draw selection border
+
             if (char === this.selectedCharacter) {
                 ctx.strokeStyle = '#00d4ff';
                 ctx.lineWidth = 2;

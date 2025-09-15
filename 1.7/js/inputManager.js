@@ -8,13 +8,32 @@ export class InputManager {
         this.handleJump = handleJump;
         this.characterManager = characterManager;
         this.lastInputTime = 0;
-        this.debounceTime = 100; // Reduced debounce time for better responsiveness
+        this.debounceTime = 50; // Default debounce time
+        this.isPassiveSupported = this.detectPassiveSupport();
         
         // Store bound handlers for removal
         this._handleKeyDown = this.handleKeyDown.bind(this);
         this._handleClick = this.handleClick.bind(this);
         this._handleTouch = this.handleTouch.bind(this);
         this.setupEventListeners();
+    }
+    
+    // Detect if passive event listeners are supported
+    detectPassiveSupport() {
+        let passiveSupported = false;
+        try {
+            const options = {
+                get passive() {
+                    passiveSupported = true;
+                    return false;
+                }
+            };
+            window.addEventListener("test", null, options);
+            window.removeEventListener("test", null, options);
+        } catch (err) {
+            passiveSupported = false;
+        }
+        return passiveSupported;
     }
     
     setupEventListeners() {
@@ -25,13 +44,19 @@ export class InputManager {
         this.canvas.addEventListener('click', this._handleClick);
         
         // Touch input
-        this.canvas.addEventListener('touchstart', this._handleTouch);
+        const touchOptions = this.isPassiveSupported ? { passive: false } : false;
+        this.canvas.addEventListener('touchstart', this._handleTouch, touchOptions);
     }
     
     removeEventListeners() {
-        document.removeEventListener('keydown', this._handleKeyDown);
-        this.canvas.removeEventListener('click', this._handleClick);
-        this.canvas.removeEventListener('touchstart', this._handleTouch);
+        try {
+            document.removeEventListener('keydown', this._handleKeyDown);
+            this.canvas.removeEventListener('click', this._handleClick);
+            const touchOptions = this.isPassiveSupported ? { passive: false } : false;
+            this.canvas.removeEventListener('touchstart', this._handleTouch, touchOptions);
+        } catch (error) {
+            console.error('Error removing event listeners:', error);
+        }
     }
     
     handleKeyDown(e) {
@@ -46,17 +71,35 @@ export class InputManager {
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
         
-        this.processInputWithPosition(x, y);
+        // Scale coordinates for high DPI displays if needed
+        const scaleX = this.canvas.width / rect.width;
+        const scaleY = this.canvas.height / rect.height;
+        const scaledX = x * scaleX;
+        const scaledY = y * scaleY;
+        
+        this.processInputWithPosition(scaledX, scaledY);
     }
     
     handleTouch(e) {
         e.preventDefault();
+        
+        // Guard against empty touch events
+        if (!e.touches || e.touches.length === 0) {
+            return;
+        }
+        
         const rect = this.canvas.getBoundingClientRect();
         const touch = e.touches[0];
         const x = touch.clientX - rect.left;
         const y = touch.clientY - rect.top;
         
-        this.processInputWithPosition(x, y);
+        // Scale coordinates for high DPI displays if needed
+        const scaleX = this.canvas.width / rect.width;
+        const scaleY = this.canvas.height / rect.height;
+        const scaledX = x * scaleX;
+        const scaledY = y * scaleY;
+        
+        this.processInputWithPosition(scaledX, scaledY);
     }
     
     processInputWithPosition(x, y) {
@@ -76,11 +119,12 @@ export class InputManager {
     
     processInput() {
         const now = Date.now();
-        if (now - this.lastInputTime < this.debounceTime) {
+        const adaptiveDebounce = this.gameState.isPlaying() ? 50 : 100; // Shorter debounce during gameplay
+        if (now - this.lastInputTime < adaptiveDebounce) {
             return; // Debounce input
         }
         this.lastInputTime = now;
-        
+
         if (this.handleJump) {
             this.handleJump();
         }

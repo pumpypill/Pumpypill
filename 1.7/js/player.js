@@ -85,6 +85,6 @@ export class Player {
             ctx.lineWidth = 2;
             ctx.strokeRect(-size / 2, -size / 2, size, size);
         }
-        ctx.restore();
-    }
+ctx.restore();
+}
 }

@@ -48,16 +48,18 @@ export class Obstacles {
 
         let gapCenter = this.calculateGapCenter();
         
-        // Ensure gap stays within bounds
-        const minGapPos = 100; // Minimum distance from top
-        const maxGapPos = this.canvasHeight - 100; // Maximum distance from bottom
+        // Ensure gap stays within bounds with additional safety margin
+        const minGapPos = Math.max(100, this.pipeGap / 2); // Minimum distance from top
+        const maxGapPos = this.canvasHeight - Math.max(100, this.pipeGap / 2); // Maximum distance from bottom
         gapCenter = Math.max(minGapPos, Math.min(maxGapPos, gapCenter));
         
         // Adjust gap size for special patterns
         let currentGap = this.pipeGap;
         if (this.currentPattern === 'narrow') {
+            // Ensure gap is never too small for player to navigate
             currentGap = Math.max(this.pipeGap * 0.75, this.OBSTACLES.MIN_GAP + 10); // Tighter gap for narrow pattern
         } else if (Math.random() < 0.1) {
+            // Occasional wider gaps for breathing room
             currentGap = this.pipeGap * 1.2; // Slightly wider gap as a breather
         }
 
@@ -66,9 +68,9 @@ export class Obstacles {
             scored: false,
             top: gapCenter - currentGap / 2,
             bottom: gapCenter + currentGap / 2,
-            // Add a small random offset to pipe heights for visual variety
-            topHeight: Math.random() * 10,
-            bottomHeight: Math.random() * 10,
+            // Add a small random offset to pipe heights for visual variety (but cap for performance)
+            topHeight: Math.floor(Math.random() * 10),
+            bottomHeight: Math.floor(Math.random() * 10),
             type: this.currentPattern
         };
 
@@ -152,13 +154,24 @@ export class Obstacles {
 
         // Ensure the new pattern is different from the current one
         let newPattern;
+        let attempts = 0;
+        const maxAttempts = 10;
+        
         do {
             newPattern = availablePatterns[Math.floor(Math.random() * availablePatterns.length)];
+            attempts++;
+            // Prevent infinite loop if there's only one pattern available
+            if (attempts >= maxAttempts) {
+                newPattern = easyPatterns[Math.floor(Math.random() * easyPatterns.length)];
+                break;
+            }
         } while (newPattern === this.currentPattern);
 
         this.currentPattern = newPattern;
 
-        console.log("Switching to pattern:", this.currentPattern); // Always log pattern changes
+        if (this.debugMode) {
+            console.log("Switching to pattern:", this.currentPattern);
+        }
 
         // Reset pattern step counter
         this.patternStep = 0;
@@ -180,24 +193,35 @@ export class Obstacles {
     }
 
     checkCollision(bird, PHYSICS) {
+        // Only check pipes that are within collision range
+        const activeRange = this.OBSTACLES.WIDTH * 2;
+        
         for (let i = 0; i < this.pipes.length; i++) {
             const pipe = this.pipes[i];
-            if (Math.abs(bird.x - (pipe.x + this.OBSTACLES.WIDTH / 2)) > this.OBSTACLES.WIDTH) {
+            
+            // Early collision optimization - skip pipes that are far away from the bird
+            // This avoids unnecessary collision calculations
+            const distanceToCenter = Math.abs(bird.x - (pipe.x + this.OBSTACLES.WIDTH / 2));
+            if (distanceToCenter > activeRange) {
                 continue;
             }
+            
+            // Calculate bird hitbox with slight reduction (0.8) for more forgiving gameplay
             const birdLeft = bird.x - PHYSICS.BIRD_RADIUS * 0.8;
             const birdRight = bird.x + PHYSICS.BIRD_RADIUS * 0.8;
             const birdTop = bird.y - PHYSICS.BIRD_RADIUS * 0.8;
             const birdBottom = bird.y + PHYSICS.BIRD_RADIUS * 0.8;
+            
+            // Perform collision check - bird rectangle vs pipe rectangles
             if (
                 birdRight > pipe.x &&
                 birdLeft < pipe.x + this.OBSTACLES.WIDTH &&
                 (birdTop < pipe.top || birdBottom > pipe.bottom)
             ) {
-                return true;
+                return true; // Collision detected
             }
         }
-        return false;
+        return false; // No collision
     }
 
     updateDifficulty(pipeGap, pipeSpacing) {
@@ -206,10 +230,18 @@ export class Obstacles {
     }
 
     draw(ctx, level, canvasHeight) {
+        // Save context state
+        ctx.save();
+        
         const hue = (level * 30) % 360;
         
         for (let i = 0; i < this.pipes.length; i++) {
             const pipe = this.pipes[i];
+            
+            // Skip drawing pipes that are off-screen for performance
+            if (pipe.x > ctx.canvas.width || pipe.x + this.OBSTACLES.WIDTH < 0) {
+                continue;
+            }
             
             // Color pipes differently based on pattern type
             switch(pipe.type) {
@@ -262,5 +294,8 @@ export class Obstacles {
                 );
             }
         }
+        
+        // Restore context state
+        ctx.restore();
     }
 }

@@ -15,11 +15,20 @@ export class UIManager {
     cacheTextMeasurements() {
         if (!this.cachedTextMeasurements) {
             const ctx = this.ctx;
-            ctx.font = 'bold 48px "SF Pro Display", sans-serif'; // Ensure font is set before measuring
+            // Cache measurements with appropriate fonts for each text element
+            ctx.font = 'bold 48px "SF Pro Display", sans-serif';
+            const titleWidth = ctx.measureText('PUMPY PILLS').width;
+            
+            ctx.font = 'bold 14px "SF Pro Display", sans-serif';
+            const startTextWidth = ctx.measureText('SPACEBAR or CLICK to start trading').width;
+            
+            ctx.font = 'bold 36px "SF Pro Display", sans-serif';
+            const gameOverTextWidth = ctx.measureText('POSITION LIQUIDATED').width;
+            
             this.cachedTextMeasurements = {
-                title: ctx.measureText('PUMPY PILLS'),
-                startText: ctx.measureText('SPACEBAR or CLICK to start trading'),
-                gameOverText: ctx.measureText('POSITION LIQUIDATED'),
+                title: { width: titleWidth },
+                startText: { width: startTextWidth },
+                gameOverText: { width: gameOverTextWidth },
             };
         }
     }
@@ -55,14 +64,15 @@ export class UIManager {
         ctx.shadowBlur = 8;
         ctx.fillStyle = '#00d4ff';
         ctx.font = 'bold 38px "SF Pro Display", sans-serif';
+        ctx.textAlign = 'center'; // Center-align text
         const scoreText = this.gameState.getScore().toString();
-        const scoreWidth = ctx.measureText(scoreText).width;
-        ctx.fillText(scoreText, this.canvas.width / 2 - scoreWidth / 2, this.canvas.height * 0.1);
+        ctx.fillText(scoreText, this.canvas.width / 2, this.canvas.height * 0.1);
         ctx.shadowBlur = 0;
 
         // Draw portfolio value
         ctx.font = 'bold 16px "SF Pro Display", sans-serif';
         ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'left'; // Align text to the left
         ctx.fillText('PUMPY/USD Live', this.canvas.width * 0.02, this.canvas.height * 0.05);
 
         ctx.font = 'bold 14px "SF Pro Display", sans-serif';
@@ -110,7 +120,7 @@ export class UIManager {
                 default:
                     ctx.fillStyle = '#81C784'; // Green-ish for standard
             }
-            
+
             // Format pattern name nicely
             const patternName = this.currentPattern.charAt(0).toUpperCase() + this.currentPattern.slice(1);
             ctx.fillText(
@@ -136,38 +146,30 @@ export class UIManager {
         ctx.shadowBlur = 15;
         ctx.font = 'bold 48px "SF Pro Display", sans-serif';
         ctx.fillStyle = '#00d4ff';
-        const titleWidth = this.cachedTextMeasurements.title.width;
-        ctx.fillText('PUMPY PILLS', this.canvas.width / 2 - titleWidth / 2, this.canvas.height / 2 - 60);
+        ctx.textAlign = 'center';
+        ctx.fillText('PUMPY PILLS', this.canvas.width / 2, this.canvas.height / 2 - 100);
         ctx.shadowBlur = 0;
 
         // Draw subtitle
         ctx.font = '18px "SF Pro Display", sans-serif';
         ctx.fillStyle = '#b2b5be';
-        const subtitle1 = 'Navigate the volatile crypto markets';
-        const sub1Width = ctx.measureText(subtitle1).width;
-        ctx.fillText(subtitle1, this.canvas.width / 2 - sub1Width / 2, this.canvas.height / 2 - 15);
+        ctx.fillText('Navigate the volatile crypto markets', this.canvas.width / 2, this.canvas.height / 2 - 60);
+
+        // Draw character selection prompt
+        ctx.font = '16px "SF Pro Display", sans-serif';
+        ctx.fillStyle = '#b2b5be';
+        ctx.fillText('Select your character:', this.canvas.width / 2, this.canvas.height / 2 - 30);
 
         // Draw start instructions
         ctx.font = 'bold 14px "SF Pro Display", sans-serif';
         ctx.fillStyle = '#00d4ff';
-        const startWidth = this.cachedTextMeasurements.startText.width;
-        ctx.fillText('SPACEBAR or CLICK to start trading', this.canvas.width / 2 - startWidth / 2, this.canvas.height / 2 + 50);
+        ctx.fillText('SPACEBAR or CLICK to start trading', this.canvas.width / 2, this.canvas.height / 2 + 50);
 
         // Draw character selection
         try {
             characterManager.drawSelection(ctx);
         } catch (error) {
             console.error('Error drawing character selection:', error);
-        }
-
-        // Draw selected character feedback
-        const selectedId = this.gameState.getSelectedCharacterId();
-        if (selectedId) {
-            ctx.font = 'bold 16px "SF Pro Display", sans-serif';
-            ctx.fillStyle = '#26a69a';
-            ctx.textAlign = 'center';
-            ctx.fillText(`Selected: ${selectedId}`, this.canvas.width / 2, this.canvas.height / 2 + 120);
-            ctx.textAlign = 'start';
         }
     }
 
@@ -186,33 +188,25 @@ export class UIManager {
         ctx.shadowBlur = 10;
         ctx.font = 'bold 36px "SF Pro Display", sans-serif';
         ctx.fillStyle = '#ef5350';
-        const gameOverWidth = this.cachedTextMeasurements.gameOverText.width;
-        ctx.fillText('POSITION LIQUIDATED', this.canvas.width / 2 - gameOverWidth / 2, this.canvas.height / 2 - 80);
+        ctx.textAlign = 'center';
+        ctx.fillText('POSITION LIQUIDATED', this.canvas.width / 2, this.canvas.height / 2 - 80);
         ctx.shadowBlur = 0;
 
         // Draw final score
         ctx.font = '20px "SF Pro Display", sans-serif';
         ctx.fillStyle = '#ffffff';
-        const finalScoreText = 'Final Score: ' + this.gameState.getScore();
-        const finalScoreWidth = ctx.measureText(finalScoreText).width;
-        ctx.fillText(finalScoreText, this.canvas.width / 2 - finalScoreWidth / 2, this.canvas.height / 2 - 30);
+        ctx.fillText('Final Score: ' + this.gameState.getScore(), this.canvas.width / 2, this.canvas.height / 2 - 30);
 
         // Draw level reached
-        const levelText = 'Reached Level: ' + this.difficulty.level;
-        const levelWidth = ctx.measureText(levelText).width;
-        ctx.fillText(levelText, this.canvas.width / 2 - levelWidth / 2, this.canvas.height / 2);
+        ctx.fillText('Reached Level: ' + this.difficulty.level, this.canvas.width / 2, this.canvas.height / 2);
 
         // Draw portfolio value
         ctx.fillStyle = '#00d4ff';
-        const portfolioText = 'Portfolio: $' + this.gameState.getPortfolioValue().toLocaleString();
-        const portfolioWidth = ctx.measureText(portfolioText).width;
-        ctx.fillText(portfolioText, this.canvas.width / 2 - portfolioWidth / 2, this.canvas.height / 2 + 30);
+        ctx.fillText('Portfolio: $' + this.gameState.getPortfolioValue().toLocaleString(), this.canvas.width / 2, this.canvas.height / 2 + 30);
 
         // Draw restart instructions
         ctx.font = 'bold 14px "SF Pro Display", sans-serif';
-        const restartText = 'SPACEBAR or CLICK to restart trading';
-        const restartWidth = ctx.measureText(restartText).width;
-        ctx.fillText(restartText, this.canvas.width / 2 - restartWidth / 2, this.canvas.height / 2 + 70);
+        ctx.fillText('SPACEBAR or CLICK to restart trading', this.canvas.width / 2, this.canvas.height / 2 + 70);
 
         // Draw character selection
         try {
@@ -220,21 +214,16 @@ export class UIManager {
         } catch (error) {
             console.error('Error drawing character selection:', error);
         }
-
-        // Draw selected character feedback
-        const selectedId = this.gameState.getSelectedCharacterId();
-        if (selectedId) {
-            ctx.font = 'bold 16px "SF Pro Display", sans-serif';
-            ctx.fillStyle = '#26a69a';
-            ctx.textAlign = 'center';
-            ctx.fillText(`Selected: ${selectedId}`, this.canvas.width / 2, this.canvas.height / 2 + 160);
-            ctx.textAlign = 'start';
-        }
+        
+        // Character feedback is now handled by characterManager.drawSelection
     }
 
     drawDebugInfo(fps, frameTime = null, frameVariance = null) {
         if (fps > 0) {
             const ctx = this.ctx;
+
+            // Save context state before modifying
+            ctx.save();
 
             // Use relative positioning for debug info
             const debugX = this.canvas.width * 0.8;
@@ -242,6 +231,7 @@ export class UIManager {
 
             ctx.font = '12px monospace';
             ctx.fillStyle = '#666';
+            ctx.textAlign = 'left';
 
             // Basic FPS display
             ctx.fillText(`FPS: ${fps}`, debugX, debugY);
@@ -262,8 +252,8 @@ export class UIManager {
                 ctx.fillText(`Jitter: ${frameVariance}ms`, debugX, debugY + 30);
             }
 
-            ctx.globalAlpha = 1.0; // Reset alpha
-            ctx.fillStyle = '#ffffff'; // Reset fill style
+            // Restore context state instead of manual resets
+            ctx.restore();
         }
     }
 }

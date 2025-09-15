@@ -5,6 +5,8 @@ export class GameState {
     constructor() {
         // States: 'loading', 'start', 'playing', 'gameover'
         this.currentState = 'loading';
+        this.difficulty = null; // Initialize difficulty reference
+        this.selectedCharacterId = null; // Initialize character selection
         this.reset();
     }
 
@@ -13,7 +15,8 @@ export class GameState {
         this.portfolioValue = 50000;
         this.worldX = 0;
         this.scroll = 0;
-        this.selectedCharacterId = null;
+        // Preserve selected character between games for better UX
+        // this.selectedCharacterId = null;
     }
 
     // State transitions
@@ -56,7 +59,13 @@ export class GameState {
     }
 
     incrementScore(amount = 1) {
-        this.score += Math.ceil(amount * (1 + (this.difficulty?.level || 0) * 0.15)); // Increased level multiplier
+        // Ensure amount is a number and provide default value if not
+        const validAmount = typeof amount === 'number' ? amount : 1;
+        
+        // Check if difficulty exists before accessing its properties
+        const levelMultiplier = this.difficulty?.level ? (1 + this.difficulty.level * 0.15) : 1;
+        
+        this.score += Math.ceil(validAmount * levelMultiplier);
         return this.score;
     }
 
@@ -94,5 +103,10 @@ export class GameState {
 
     getSelectedCharacterId() {
         return this.selectedCharacterId;
+    }
+    
+    // Difficulty management
+    setDifficulty(difficulty) {
+        this.difficulty = difficulty;
     }
 }
