@@ -26,6 +26,8 @@ export class Obstacles {
         this.patternDirection = 1; // 1 for up, -1 for down
         this.obstacleCount = 0;
         this.debugMode = false; // Add a debug mode flag
+        // Cache for repeating pattern fills (keyed by type + hue bucket)
+        this._patternCache = Object.create(null);
     }
 
     reset(canvasHeight, pipeGap, pipeSpacing) {
@@ -294,37 +296,35 @@ export class Obstacles {
                     gradientColor2 = `hsl(${hue}, 35%, 15%)`;
             }
 
+            // Acquire cached repeating pattern for this type/hue bucket
+            const pattern = this._getPattern(ctx, pipe.type, hue, fillColor);
+
             ctx.lineWidth = 2;
 
-            // Draw top pipe with rug-like pattern
+            // Draw top pipe using cached pattern (fast)
             if (pipe.top > 0) {
-                ctx.fillStyle = fillColor;
+                ctx.fillStyle = pattern;
                 ctx.fillRect(pipe.x, 0, this.OBSTACLES.WIDTH, pipe.top + pipe.topHeight);
 
-                // Add rug-like pattern
-                this.drawRugPattern(ctx, pipe.x, 0, this.OBSTACLES.WIDTH, pipe.top + pipe.topHeight, pipe.type, hue);
-
-                // Draw border/fringe for rug appearance
+                // Border
                 ctx.strokeStyle = strokeColor;
                 ctx.strokeRect(pipe.x, 0, this.OBSTACLES.WIDTH, pipe.top + pipe.topHeight);
 
+                // Fringe
                 this.drawRugFringe(ctx, pipe.x, pipe.top + pipe.topHeight, this.OBSTACLES.WIDTH, hue);
             }
 
-            // Draw bottom pipe with rug-like pattern
+            // Draw bottom pipe using cached pattern (fast)
             if (pipe.bottom < canvasHeight) {
                 const bottomHeight = canvasHeight - pipe.bottom + pipe.bottomHeight;
 
-                ctx.fillStyle = fillColor;
+                ctx.fillStyle = pattern;
                 ctx.fillRect(
                     pipe.x,
                     pipe.bottom - pipe.bottomHeight,
                     this.OBSTACLES.WIDTH,
                     bottomHeight
                 );
-
-                this.drawRugPattern(ctx, pipe.x, pipe.bottom - pipe.bottomHeight,
-                    this.OBSTACLES.WIDTH, bottomHeight, pipe.type, hue);
 
                 ctx.strokeStyle = strokeColor;
                 ctx.strokeRect(
@@ -343,6 +343,93 @@ export class Obstacles {
 
         // Restore context state
         ctx.restore();
+    }
+
+    // Lightweight pattern caching: quantize hue, build small tile once, reuse via createPattern
+    _getPattern(ctx, type, hue, baseFill) {
+        const bucket = Math.round(hue / 30) * 30; // 12 buckets
+        const key = `${type}:${bucket}`;
+        if (this._patternCache[key]) return this._patternCache[key];
+
+        const tile = document.createElement('canvas');
+        tile.width = 48;
+        tile.height = 48;
+        const t = tile.getContext('2d');
+
+        // Background
+        t.fillStyle = baseFill;
+        t.fillRect(0, 0, tile.width, tile.height);
+
+        // Accent tones derived from hue bucket
+        const accent1 = `hsla(${bucket + 20}, 50%, 55%, 0.28)`;
+        const accent2 = `hsla(${bucket - 15}, 40%, 35%, 0.20)`;
+
+        // Draw a tiny motif depending on type (kept very cheap)
+        t.fillStyle = accent1;
+        t.strokeStyle = accent2;
+        t.lineWidth = 1;
+
+        switch (type) {
+            case 'staircase':
+                // Small diamonds
+                for (let y = 8; y < tile.height; y += 16) {
+                    for (let x = 8; x < tile.width; x += 16) {
+                        t.beginPath();
+                        t.moveTo(x, y - 4);
+                        t.lineTo(x + 4, y);
+                        t.lineTo(x, y + 4);
+                        t.lineTo(x - 4, y);
+                        t.closePath();
+                        t.fill();
+                    }
+                }
+                break;
+            case 'wave':
+                // Soft sine stripes
+                t.beginPath();
+                for (let x = 0; x <= tile.width; x += 6) {
+                    const y = 12 + Math.sin(x * 0.4) * 4;
+                    t.moveTo(x, y);
+                    t.lineTo(x, y + 20);
+                }
+                t.stroke();
+                break;
+            case 'zigzag':
+                // Chevron
+                t.beginPath();
+                for (let y = 6; y < tile.height + 6; y += 12) {
+                    t.moveTo(0, y);
+                    for (let x = 0; x <= tile.width; x += 8) {
+                        t.lineTo(x + 4, y - 4);
+                        t.lineTo(x + 8, y);
+                    }
+                }
+                t.stroke();
+                break;
+            case 'narrow':
+                // Inner border
+                t.strokeRect(6, 6, tile.width - 12, tile.height - 12);
+                break;
+            case 'rhythm':
+                // Alternating stripes
+                for (let y = 0; y < tile.height; y += 8) {
+                    t.fillStyle = (y / 8) % 2 ? accent1 : accent2;
+                    t.fillRect(0, y, tile.width, 4);
+                }
+                break;
+            default:
+                // Sparse dots
+                t.fillStyle = accent1;
+                for (let y = 4; y < tile.height; y += 12) {
+                    for (let x = 4; x < tile.width; x += 12) {
+                        t.fillRect(x, y, 2, 2);
+                    }
+                }
+        }
+
+        const pattern = t.createPattern(tile, 'repeat');
+        this._patternCache[key] = pattern;
+        return pattern;
     }
 
     // Method to draw rug fringe
@@ -375,97 +462,10 @@ export class Obstacles {
         }
     }
     
-    // Helper method to draw rug patterns based on obstacle type
-    drawRugPattern(ctx, x, y, width, height, type, hue) {
-        // Different rug pattern for each obstacle type
-        switch(type) {
-            case 'staircase':
-                // Geometric pattern typical of tribal rugs
-                this.drawTribalRugPattern(ctx, x, y, width, height, hue);
-                break;
-                
-            case 'wave':
-                // Oriental floral pattern
-                this.drawOrientalRugPattern(ctx, x, y, width, height, hue);
-                break;
-                
-            case 'zigzag':
-                // Chevron/zigzag pattern
-                this.drawChevronRugPattern(ctx, x, y, width, height, hue);
-                break;
-                
-            case 'narrow':
-                // Persian medallion style
-                this.drawPersianRugPattern(ctx, x, y, width, height, hue);
-                break;
-                
-            case 'rhythm':
-                // Striped kilim pattern
-                this.drawKilimRugPattern(ctx, x, y, width, height, hue);
-                break;
-                
-            default:
-                // Simple diamond pattern
-                this.drawSimpleDiamondPattern(ctx, x, y, width, height, hue);
-        }
-    }
-    
-    // Tribal geometric pattern
-    drawTribalRugPattern(ctx, x, y, width, height, hue) {
-        const patternSize = 15;
-        const accentColor = `hsla(${hue + 30}, 50%, 50%, 0.3)`;
-        const bgColor = `hsla(${hue + 30}, 30%, 30%, 0.2)`;
-        
-        ctx.fillStyle = accentColor;
-        
-        // Draw geometric shapes
-        for (let i = 0; i < height; i += patternSize * 2) {
-            for (let j = 0; j < width; j += patternSize * 2) {
-                // Diamond shapes
-                ctx.beginPath();
-                ctx.moveTo(x + j + patternSize/2, y + i);
-                ctx.lineTo(x + j + patternSize, y + i + patternSize/2);
-                ctx.lineTo(x + j + patternSize/2, y + i + patternSize);
-                ctx.lineTo(x + j, y + i + patternSize/2);
-                ctx.closePath();
-                ctx.fill();
-            }
-        }
-        
-        // Add horizontal divider lines
-        ctx.fillStyle = bgColor;
-        for (let i = patternSize; i < height; i += patternSize * 3) {
-            ctx.fillRect(x, y + i, width, 2);
-        }
-    }
-    
-    // Oriental floral pattern
-    drawOrientalRugPattern(ctx, x, y, width, height, hue) {
-        const patternSize = 20;
-        const accentColor = `hsla(${hue + 180}, 50%, 60%, 0.25)`;
-        const bgColor = `hsla(${hue + 210}, 40%, 40%, 0.2)`;
-        
-        // Background grid
-        ctx.fillStyle = bgColor;
-        for (let i = 0; i < height; i += patternSize) {
-            for (let j = 0; j < width; j += patternSize) {
-                if ((i + j) % (patternSize * 2) === 0) {
-                    ctx.fillRect(x + j, y + i, patternSize, patternSize);
-                }
-            }
-        }
-        
-        // Floral dots
-        ctx.fillStyle = accentColor;
-        for (let i = patternSize/2; i < height; i += patternSize) {
-            for (let j = patternSize/2; j < width; j += patternSize) {
-                ctx.beginPath();
-                ctx.arc(x + j, y + i, 3, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-    }
-    
+    // NOTE: Heavy per-frame pattern painters kept for reference but no longer used:
+    // drawRugPattern, drawTribalRugPattern, drawOrientalRugPattern, drawChevronRugPattern,
+    // drawPersianRugPattern, drawKilimRugPattern, drawSimpleDiamondPattern
+}
     // Chevron/zigzag pattern
     drawChevronRugPattern(ctx, x, y, width, height, hue) {
         const patternHeight = 12;

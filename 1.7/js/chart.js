@@ -67,46 +67,65 @@ export class ChartTrail {
         const visibleStartX = -this.CHART.CANDLE_WIDTH;
         const visibleEndX = this.canvas.width;
 
-        // Draw the chart trail
+        const cw = this.CHART.CANDLE_WIDTH;
+        const visibles = [];
+
+        // Precompute visible candles with screen-space positions
         for (let i = 0; i < this.candles.length; i++) {
-            const candle = this.candles[i];
-            const candleX = chartXOffset - (worldX - candle.x);
+            const c = this.candles[i];
+            const x = chartXOffset - (worldX - c.x);
+            if (x + cw < visibleStartX || x > visibleEndX) continue;
 
-            // Skip candles that are off-screen
-            if (candleX + this.CHART.CANDLE_WIDTH < visibleStartX || candleX > visibleEndX) {
-                continue;
-            }
-
-            // Draw the wick
-            ctx.strokeStyle = '#ffffff'; // White wick for better visibility
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(candleX + this.CHART.CANDLE_WIDTH / 2, candle.high);
-            ctx.lineTo(candleX + this.CHART.CANDLE_WIDTH / 2, candle.low);
-            ctx.stroke();
-
-            // Draw the body
-            ctx.fillStyle = candle.color === 'green' ? '#4CAF50' : '#E57373'; // Bright green and red for visibility
-            const yPos = Math.min(candle.open, candle.close);
-            const height = Math.max(1, Math.abs(candle.open - candle.close)); // Ensure minimum height of 1px
-            
-            ctx.fillRect(
-                candleX,
-                yPos,
-                this.CHART.CANDLE_WIDTH,
-                height
-            );
-
-            // Add a border for better visibility
-            ctx.strokeStyle = '#000000'; // Black border
-            ctx.lineWidth = 0.5;
-            ctx.strokeRect(
-                candleX,
-                yPos,
-                this.CHART.CANDLE_WIDTH,
-                height
-            );
+            const yPos = Math.min(c.open, c.close);
+            const height = Math.max(1, Math.abs(c.open - c.close));
+            visibles.push({ x, yPos, height, high: c.high, low: c.low, up: c.color === 'green' });
         }
+
+        if (visibles.length === 0) {
+            ctx.restore();
+            return;
+        }
+
+        // 1) Draw all wicks in a single stroke
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        for (let i = 0; i < visibles.length; i++) {
+            const v = visibles[i];
+            ctx.moveTo(v.x + cw / 2, v.high);
+            ctx.lineTo(v.x + cw / 2, v.low);
+        }
+        ctx.stroke();
+
+        // 2) Fill green bodies together
+        ctx.fillStyle = '#4CAF50';
+        ctx.beginPath();
+        for (let i = 0; i < visibles.length; i++) {
+            const v = visibles[i];
+            if (!v.up) continue;
+            ctx.rect(v.x, v.yPos, cw, v.height);
+        }
+        ctx.fill();
+
+        // 3) Fill red bodies together
+        ctx.fillStyle = '#E57373';
+        ctx.beginPath();
+        for (let i = 0; i < visibles.length; i++) {
+            const v = visibles[i];
+            if (v.up) continue;
+            ctx.rect(v.x, v.yPos, cw, v.height);
+        }
+        ctx.fill();
+
+        // 4) Stroke borders once for all bodies
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 0.5;
+        ctx.beginPath();
+        for (let i = 0; i < visibles.length; i++) {
+            const v = visibles[i];
+            ctx.rect(v.x, v.yPos, cw, v.height);
+        }
+        ctx.stroke();
         
         // Restore context state
         ctx.restore();
