@@ -69,24 +69,40 @@ export class Particles {
     draw(ctx) {
         // Skip drawing if no particles
         if (this.particles.length === 0) return;
-        
-        // Save context state before modifications
+
         ctx.save();
-        
-        // Use beginPath once for all circles
-        ctx.beginPath();
-        
-        // Draw all particles in a single path for better performance
+
+        // Group particles by color and opacity bucket (reduces fill/style switches)
+        const particlesByColor = {};
         for (let i = 0; i < this.particles.length; i++) {
-            const particle = this.particles[i];
-            ctx.globalAlpha = Math.max(0, particle.life / 30);
-            ctx.fillStyle = particle.color;
-            ctx.moveTo(particle.x + 3, particle.y); // Move to edge of circle
-            ctx.arc(particle.x, particle.y, 3, 0, TWO_PI);
+            const p = this.particles[i];
+            // Bucket alpha into 11 levels (0-10)
+            const alphaBucket = Math.max(0, Math.min(10, Math.round((Math.max(0, p.life) / 30) * 10)));
+            const key = `${p.color}|${alphaBucket}`;
+            if (!particlesByColor[key]) {
+                particlesByColor[key] = { color: p.color, alpha: alphaBucket / 10, items: [] };
+            }
+            particlesByColor[key].items.push(p);
+        }
+
+        // Draw each group with a single path/fill
+        for (const key in particlesByColor) {
+            const group = particlesByColor[key];
+            if (!group.items.length || group.alpha <= 0) continue;
+
+            ctx.globalAlpha = group.alpha;
+            ctx.fillStyle = group.color;
+            ctx.beginPath();
+
+            for (let i = 0; i < group.items.length; i++) {
+                const particle = group.items[i];
+                ctx.moveTo(particle.x + 3, particle.y);
+                ctx.arc(particle.x, particle.y, 3, 0, TWO_PI);
+            }
+
             ctx.fill();
         }
-        
-    // Restore context state
-    ctx.restore();
+
+        ctx.restore();
     }
 }

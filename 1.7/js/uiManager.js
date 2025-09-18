@@ -59,6 +59,7 @@ export class UIManager {
             return;
         }
 
+        ctx.save();
         // Draw score
         ctx.shadowColor = '#00d4ff';
         ctx.shadowBlur = 8;
@@ -129,6 +130,7 @@ export class UIManager {
                 this.canvas.height * 0.17
             );
         }
+        ctx.restore();
     }
 
     drawStartScreen(characterManager) {
@@ -137,6 +139,7 @@ export class UIManager {
         // Cache text measurements if not already cached
         this.cacheTextMeasurements();
 
+        ctx.save();
         // Draw overlay
         ctx.fillStyle = 'rgba(13, 20, 33, 0.95)';
         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
@@ -171,6 +174,7 @@ export class UIManager {
         } catch (error) {
             console.error('Error drawing character selection:', error);
         }
+        ctx.restore();
     }
 
     drawGameOverScreen(characterManager) {
@@ -179,6 +183,7 @@ export class UIManager {
         // Cache text measurements if not already cached
         this.cacheTextMeasurements();
 
+        ctx.save();
         // Draw overlay
         ctx.fillStyle = 'rgba(13, 20, 33, 0.95)';
         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
@@ -214,8 +219,7 @@ export class UIManager {
         } catch (error) {
             console.error('Error drawing character selection:', error);
         }
-        
-        // Character feedback is now handled by characterManager.drawSelection
+        ctx.restore();
     }
 
     drawDebugInfo(fps, frameTime = null, frameVariance = null) {

@@ -1,12 +1,8 @@
 {
-  "name": "pump-dev-server",
+  "name": "pumpy-pill",
   "version": "1.0.0",
-  "description": "Simple dev server for pump website/game",
-  "main": "dev-server.js",
+  "private": true,
   "scripts": {
-    "start": "node dev-server.js"
-  },
-  "dependencies": {
-    "express": "^4.18.2"
+    "build": "echo Static site - no build step needed"
   }
 }

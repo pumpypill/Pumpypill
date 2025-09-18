@@ -233,21 +233,30 @@ export class Obstacles {
     draw(ctx, level, canvasHeight) {
         // Save context state
         ctx.save();
-        
+
         const hue = (level * 30) % 360;
-        
+
+        // Precompute active render bounds with a small buffer
+        const activeRange = { left: -this.OBSTACLES.WIDTH - 50, right: ctx.canvas.width + 50 };
+        const centerY = canvasHeight / 2;
+
         for (let i = 0; i < this.pipes.length; i++) {
             const pipe = this.pipes[i];
-            
+
             // Skip drawing pipes that are off-screen for performance
-            if (pipe.x > ctx.canvas.width || pipe.x + this.OBSTACLES.WIDTH < 0) {
+            if (pipe.x > activeRange.right || pipe.x + this.OBSTACLES.WIDTH < activeRange.left) {
                 continue;
             }
-            
+
+            // Compute once and reuse
+            const distanceToCenter = Math.abs(((pipe.top + pipe.bottom) / 2) - centerY);
+            const alpha = Math.max(0.7, 1 - (distanceToCenter / (canvasHeight * 1.2)));
+            ctx.globalAlpha = alpha;
+
             // Create base colors based on pattern type with enhanced saturation and lightness
             let fillColor, strokeColor, gradientColor1, gradientColor2;
-            
-            switch(pipe.type) {
+
+            switch (pipe.type) {
                 case 'staircase':
                     fillColor = `hsl(${hue + 30}, 40%, 20%)`;
                     strokeColor = `hsl(${hue + 30}, 45%, 30%)`;
@@ -284,61 +293,58 @@ export class Obstacles {
                     gradientColor1 = `hsl(${hue}, 42%, 25%)`;
                     gradientColor2 = `hsl(${hue}, 35%, 15%)`;
             }
-            
+
             ctx.lineWidth = 2;
-            
+
             // Draw top pipe with rug-like pattern
             if (pipe.top > 0) {
-                // Background fill for the pipe
                 ctx.fillStyle = fillColor;
                 ctx.fillRect(pipe.x, 0, this.OBSTACLES.WIDTH, pipe.top + pipe.topHeight);
-                
+
                 // Add rug-like pattern
                 this.drawRugPattern(ctx, pipe.x, 0, this.OBSTACLES.WIDTH, pipe.top + pipe.topHeight, pipe.type, hue);
-                
+
                 // Draw border/fringe for rug appearance
                 ctx.strokeStyle = strokeColor;
                 ctx.strokeRect(pipe.x, 0, this.OBSTACLES.WIDTH, pipe.top + pipe.topHeight);
-                
-                // Add fringe at the bottom edge of the rug
+
                 this.drawRugFringe(ctx, pipe.x, pipe.top + pipe.topHeight, this.OBSTACLES.WIDTH, hue);
             }
-            
+
             // Draw bottom pipe with rug-like pattern
             if (pipe.bottom < canvasHeight) {
                 const bottomHeight = canvasHeight - pipe.bottom + pipe.bottomHeight;
-                
-                // Background fill for the pipe
+
                 ctx.fillStyle = fillColor;
                 ctx.fillRect(
-                    pipe.x, 
-                    pipe.bottom - pipe.bottomHeight, 
-                    this.OBSTACLES.WIDTH, 
+                    pipe.x,
+                    pipe.bottom - pipe.bottomHeight,
+                    this.OBSTACLES.WIDTH,
                     bottomHeight
                 );
-                
-                // Add rug-like pattern
-                this.drawRugPattern(ctx, pipe.x, pipe.bottom - pipe.bottomHeight, 
+
+                this.drawRugPattern(ctx, pipe.x, pipe.bottom - pipe.bottomHeight,
                     this.OBSTACLES.WIDTH, bottomHeight, pipe.type, hue);
-                
-                // Draw border/fringe for rug appearance
+
                 ctx.strokeStyle = strokeColor;
                 ctx.strokeRect(
-                    pipe.x, 
-                    pipe.bottom - pipe.bottomHeight, 
-                    this.OBSTACLES.WIDTH, 
+                    pipe.x,
+                    pipe.bottom - pipe.bottomHeight,
+                    this.OBSTACLES.WIDTH,
                     bottomHeight
                 );
-                
-                // Add fringe at the top edge of the rug
+
                 this.drawRugFringe(ctx, pipe.x, pipe.bottom - pipe.bottomHeight, this.OBSTACLES.WIDTH, hue, true);
             }
+
+            // Reset alpha for next pipe
+            ctx.globalAlpha = 1;
         }
-        
+
         // Restore context state
         ctx.restore();
     }
-    
+
     // Method to draw rug fringe
     drawRugFringe(ctx, x, y, width, hue, isTopFringe = false) {
         const fringeHeight = 3;
