@@ -443,9 +443,15 @@ a:focus-visible {
 .about-container h2,
 .contact-container h2,
 .bugs-container h2 {
-    color: var(--color-accent);
-    margin-top: 0;
-    letter-spacing: 1px;
+    color: #ffffff; /* white headings */
+}
+
+/* Override: headings white, body text light gray for mission/about/contact/bugs */
+.mission-container,
+.about-container,
+.contact-container,
+.bugs-container {
+    color: #d4d9e2; /* very light gray text */
 }
 
 /* Responsive Adjustments */
