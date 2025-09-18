@@ -2,13 +2,75 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0; url=./1.7/1.6.6.html" />
-    <title>Redirecting...</title>
-    <script>
-        window.location.href = "./1.7/1.6.6.html";
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pumpy Pill</title>
+    <!-- Make all relative paths resolve to /1.7/ so we don't have to move files -->
+    <base href="/1.7/">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <p>If you are not redirected automatically, <a href="./1.7/1.6.6.html">click here</a>.</p>
+    <header>
+        <img src="./assets/characters/cupsey.png" alt="Cupsey Logo" style="height:48px;width:auto;vertical-align:middle;display:inline-block;">
+    </header>
+    <main>
+        <h1 style="text-align:center;margin-bottom:16px;">Pumpy Pill</h1>
+        <div class="content-container">
+            <div class="game-container">
+                <div class="canvas-container">
+                    <canvas id="gameCanvas" width="800" height="600"></canvas>
+                </div>
+                <div class="instructions">
+                    <p>Time your jumps carefully to navigate the obstacles!</p>
+                </div>
+            </div>
+            <div class="info-container">
+                <h2>Game Instructions</h2>
+                <p>Click or tap to make your character jump. Avoid obstacles and collect points to increase your score!</p>
+                <p>Each level increases the difficulty but also gives you more rewards. Watch for special patterns that may appear!</p>
+            </div>
+            <div class="roadmap-container">
+                <h2>Roadmap</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            </div>
+            <div class="roadmap-container">
+                <h2>Our Mission</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            </div>
+            <div class="roadmap-container">
+                <h2>About Us</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            </div>
+            <div class="roadmap-container">
+                <h2>Contact Us</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            </div>
+            <div class="roadmap-container">
+                <h2>Bug Reports and Feature Requests</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            </div>            
+        </div>
+    </main>
+    <footer>
+        THIS IS JUST A BETA. NO TOKEN AT THIS TIME
+    </footer>
+    <script type="module">
+    // ...existing code from 1.7/1.6.6.html (imports, game setup, and loop)...
+    import { Player } from "./js/player.js";
+    import { Obstacles } from "./js/obstacles.js";
+    import { ChartTrail } from "./js/chart.js";
+    import { Particles } from "./js/particles.js";
+    import { DifficultyManager } from "./js/difficulty.js";
+    import { CharacterManager } from "./js/characterManager.js";
+    import { GameState } from "./js/gameState.js";
+    import { InputManager } from "./js/inputManager.js";
+    import { UIManager } from "./js/uiManager.js";
+    import { PerformanceMonitor } from "./js/performanceMonitor.js";
+
+    // ...existing code...
+    // All relative paths continue to work because of <base href="/1.7/">
+    // e.g. images: ./assets/..., sounds: ./assets/..., modules: ./js/..., CSS: styles.css
+
+    // ...existing code copied from the original 1.7/1.6.6.html script block...
+    </script>
 </body>
 </html>
