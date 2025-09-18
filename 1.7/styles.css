@@ -44,7 +44,7 @@ body {
 canvas { 
     display: block; 
     margin: 0 auto; 
-    background: var(--color-background); 
+    background: #15161b; /* match page background so canvas is visibly painted */
     border: 2px solid var(--color-border); 
     border-radius: var(--border-radius); 
     box-shadow: var(--shadow-md); 

@@ -258,6 +258,3 @@ export class UIManager {
         }
     }
 }
-        }
-    }
-}

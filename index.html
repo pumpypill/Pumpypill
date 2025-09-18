@@ -130,7 +130,7 @@
     const totalAssets = CHARACTERS.length;
     let loadedAssets = 0;
 
-    // Improved character loading
+    // Improved character loading: don't block Start if an image fails
     CHARACTERS.forEach(char => {
         char.loaded = false;
         char.image.onerror = function() {
@@ -142,7 +142,8 @@
                 char.loaded = false;
                 loadedAssets++;
                 loadingProgress = (loadedAssets / totalAssets) * 100;
-                if (loadedAssets === totalAssets && CHARACTERS.every(c => c.loaded)) {
+                // Allow Start once all attempts are done (even if some failed)
+                if (loadedAssets === totalAssets) {
                     assetsLoaded = true;
                     gameState.setStart();
                 }
@@ -153,13 +154,22 @@
             char.loaded = true;
             loadedAssets++;
             loadingProgress = (loadedAssets / totalAssets) * 100;
-            if (loadedAssets === totalAssets && CHARACTERS.every(c => c.loaded)) {
+            // Allow Start once all attempts are done (even if some failed)
+            if (loadedAssets === totalAssets) {
                 assetsLoaded = true;
                 gameState.setStart();
             }
         };
         char.image.src = char.src;
     });
+
+    // Fallback: if assets stall, enter Start after a short delay
+    setTimeout(() => {
+        if (!assetsLoaded) {
+            assetsLoaded = true;
+            gameState.setStart();
+        }
+    }, 3000);
 
     // Character system
     const characterManager = new CharacterManager(CHARACTERS, canvas, gameState);
@@ -281,6 +291,11 @@
     }
 
     function draw() {
+        // Frame safety: reset any lingering canvas state
+        ctx.save();
+        ctx.globalAlpha = 1;
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = '#15161b'; // match page background
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -339,6 +354,9 @@
                 performanceMonitor.getFrameTimeVariance().toFixed(1)
             );
         }
+
+        // Always restore to avoid state leaks across frames
+        ctx.restore();
     }
 
     function drawVolumeBars(ctx, canvas, barCount = 48, barHeight = 40) {
