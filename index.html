@@ -281,12 +281,12 @@
 
     function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#0d1421';
+        ctx.fillStyle = '#0b0f14';  // match page background
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         drawVolumeBars(ctx, canvas, 48, 40);
 
-        ctx.strokeStyle = '#1a1f2e';
+        ctx.strokeStyle = '#1a202a'; // subtle grid to match border
         ctx.lineWidth = 0.5;
         ctx.beginPath();
         const gridOffset = gameState.getScroll() % 50;
