@@ -26,8 +26,6 @@ export class Obstacles {
         this.patternDirection = 1; // 1 for up, -1 for down
         this.obstacleCount = 0;
         this.debugMode = false; // Add a debug mode flag
-        // Cache for repeating pattern fills (keyed by type + hue bucket)
-        this._patternCache = Object.create(null);
     }
 
     reset(canvasHeight, pipeGap, pipeSpacing) {
@@ -255,8 +253,9 @@ export class Obstacles {
             const alpha = Math.max(0.7, 1 - (distanceToCenter / (canvasHeight * 1.2)));
             ctx.globalAlpha = alpha;
 
-            // Create base colors based on pattern type
+            // Create base colors based on pattern type with enhanced saturation and lightness
             let fillColor, strokeColor, gradientColor1, gradientColor2;
+
             switch (pipe.type) {
                 case 'staircase':
                     fillColor = `hsl(${hue + 30}, 40%, 20%)`;
@@ -293,38 +292,39 @@ export class Obstacles {
                     strokeColor = `hsl(${hue}, 45%, 30%)`;
                     gradientColor1 = `hsl(${hue}, 42%, 25%)`;
                     gradientColor2 = `hsl(${hue}, 35%, 15%)`;
-                    break;
             }
-
-            // Acquire cached repeating pattern for this type/hue bucket
-            const pattern = this._getPattern(ctx, pipe.type, hue, fillColor);
 
             ctx.lineWidth = 2;
 
-            // Draw top pipe using cached pattern
+            // Draw top pipe with rug-like pattern
             if (pipe.top > 0) {
-                ctx.fillStyle = pattern;
+                ctx.fillStyle = fillColor;
                 ctx.fillRect(pipe.x, 0, this.OBSTACLES.WIDTH, pipe.top + pipe.topHeight);
 
-                // Border
+                // Add rug-like pattern
+                this.drawRugPattern(ctx, pipe.x, 0, this.OBSTACLES.WIDTH, pipe.top + pipe.topHeight, pipe.type, hue);
+
+                // Draw border/fringe for rug appearance
                 ctx.strokeStyle = strokeColor;
                 ctx.strokeRect(pipe.x, 0, this.OBSTACLES.WIDTH, pipe.top + pipe.topHeight);
 
-                // Fringe
                 this.drawRugFringe(ctx, pipe.x, pipe.top + pipe.topHeight, this.OBSTACLES.WIDTH, hue);
             }
 
-            // Draw bottom pipe using cached pattern
+            // Draw bottom pipe with rug-like pattern
             if (pipe.bottom < canvasHeight) {
                 const bottomHeight = canvasHeight - pipe.bottom + pipe.bottomHeight;
 
-                ctx.fillStyle = pattern;
+                ctx.fillStyle = fillColor;
                 ctx.fillRect(
                     pipe.x,
                     pipe.bottom - pipe.bottomHeight,
                     this.OBSTACLES.WIDTH,
                     bottomHeight
                 );
+
+                this.drawRugPattern(ctx, pipe.x, pipe.bottom - pipe.bottomHeight,
+                    this.OBSTACLES.WIDTH, bottomHeight, pipe.type, hue);
 
                 ctx.strokeStyle = strokeColor;
                 ctx.strokeRect(
@@ -343,88 +343,6 @@ export class Obstacles {
 
         // Restore context state
         ctx.restore();
-    }
-
-    // Lightweight pattern caching: quantize hue, build small tile once, reuse via createPattern
-    _getPattern(ctx, type, hue, baseFill) {
-        const bucket = Math.round(hue / 30) * 30; // 12 buckets
-        const key = `${type}:${bucket}`;
-        if (this._patternCache[key]) return this._patternCache[key];
-
-        const tile = document.createElement('canvas');
-        tile.width = 48;
-        tile.height = 48;
-        const t = tile.getContext('2d');
-
-        // Background
-        t.fillStyle = baseFill;
-        t.fillRect(0, 0, tile.width, tile.height);
-
-        // Accent tones derived from hue bucket
-        const accent1 = `hsla(${bucket + 20}, 50%, 55%, 0.28)`;
-        const accent2 = `hsla(${bucket - 15}, 40%, 35%, 0.20)`;
-
-        // Motifs per type (kept lightweight)
-        t.fillStyle = accent1;
-        t.strokeStyle = accent2;
-        t.lineWidth = 1;
-
-        switch (type) {
-            case 'staircase':
-                for (let yy = 8; yy < tile.height; yy += 16) {
-                    for (let xx = 8; xx < tile.width; xx += 16) {
-                        t.beginPath();
-                        t.moveTo(xx, yy - 4);
-                        t.lineTo(xx + 4, yy);
-                        t.lineTo(xx, yy + 4);
-                        t.lineTo(xx - 4, yy);
-                        t.closePath();
-                        t.fill();
-                    }
-                }
-                break;
-            case 'wave':
-                t.beginPath();
-                for (let xx = 0; xx <= tile.width; xx += 6) {
-                    const yy = 12 + Math.sin(xx * 0.4) * 4;
-                    t.moveTo(xx, yy);
-                    t.lineTo(xx, yy + 20);
-                }
-                t.stroke();
-                break;
-            case 'zigzag':
-                t.beginPath();
-                for (let yy = 6; yy < tile.height + 6; yy += 12) {
-                    t.moveTo(0, yy);
-                    for (let xx = 0; xx <= tile.width; xx += 8) {
-                        t.lineTo(xx + 4, yy - 4);
-                        t.lineTo(xx + 8, yy);
-                    }
-                }
-                t.stroke();
-                break;
-            case 'narrow':
-                t.strokeRect(6, 6, tile.width - 12, tile.height - 12);
-                break;
-            case 'rhythm':
-                for (let yy = 0; yy < tile.height; yy += 8) {
-                    t.fillStyle = (yy / 8) % 2 ? accent1 : accent2;
-                    t.fillRect(0, yy, tile.width, 4);
-                }
-                break;
-            default:
-                t.fillStyle = accent1;
-                for (let yy = 4; yy < tile.height; yy += 12) {
-                    for (let xx = 4; xx < tile.width; xx += 12) {
-                        t.fillRect(xx, yy, 2, 2);
-                    }
-                }
-                break;
-        }
-
-        const pattern = ctx.createPattern(tile, 'repeat');
-        this._patternCache[key] = pattern;
-        return pattern;
     }
 
     // Method to draw rug fringe

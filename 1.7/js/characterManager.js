@@ -102,12 +102,20 @@ export class CharacterManager {
             ctx.fillRect(x, y, 60, 60);
 
             if (char.loaded) {
+                // Fit character image inside 60x60 box with padding (48x48 max)
+                const maxW = 48, maxH = 48;
+                const scale = Math.min(maxW / char.width, maxH / char.height, 1);
+                const drawW = Math.round(char.width * scale);
+                const drawH = Math.round(char.height * scale);
+                const offsetX = Math.floor((60 - drawW) / 2);
+                const offsetY = Math.floor((60 - drawH) / 2);
+
                 ctx.drawImage(
                     char.image,
-                    x + (60 - char.width) / 2,
-                    y + (60 - char.height) / 2,
-                    char.width,
-                    char.height
+                    x + offsetX,
+                    y + offsetY,
+                    drawW,
+                    drawH
                 );
             } else {
                 ctx.fillStyle = char.color;

@@ -44,7 +44,7 @@
             </div>
             <div class="roadmap-container">
                 <h2>Bug Reports and Feature Requests</h2>
-                <p>If you encounter any bugs or have feature requests, please let us know by contacting us on X</a>.</p>
+                <p>If you encounter any bugs or have feature requests, please let us know by contacting us on X.</p>
             </div>
         </div>
     </main>
@@ -142,7 +142,8 @@
                 char.loaded = false;
                 loadedAssets++;
                 loadingProgress = (loadedAssets / totalAssets) * 100;
-                if (loadedAssets === totalAssets && CHARACTERS.every(c => c.loaded)) {
+                // Start once all attempts are done, even if some failed
+                if (loadedAssets === totalAssets) {
                     assetsLoaded = true;
                     gameState.setStart();
                 }
@@ -153,7 +154,8 @@
             char.loaded = true;
             loadedAssets++;
             loadingProgress = (loadedAssets / totalAssets) * 100;
-            if (loadedAssets === totalAssets && CHARACTERS.every(c => c.loaded)) {
+            // Start once all assets (load or fail) have completed
+            if (loadedAssets === totalAssets) {
                 assetsLoaded = true;
                 gameState.setStart();
             }
@@ -174,6 +176,8 @@
 
     // Difficulty system
     const difficulty = new DifficultyManager(OBSTACLES);
+    // Link difficulty into game state so score scaling works
+    gameState.setDifficulty(difficulty);
 
     // Obstacles system
     const obstacles = new Obstacles(canvas.height, OBSTACLES, difficulty.pipeGap, difficulty.pipeSpacing);
