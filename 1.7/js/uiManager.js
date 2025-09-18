@@ -36,7 +36,7 @@ export class UIManager {
     drawLoadingScreen(loadingProgress) {
         const ctx = this.ctx;
 
-        ctx.fillStyle = '#00d4ff';
+        ctx.fillStyle = '#00e599';
         ctx.font = 'bold 24px "SF Pro Display", sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText('Loading...', this.canvas.width / 2, this.canvas.height / 2 - 30);
@@ -61,9 +61,9 @@ export class UIManager {
 
         ctx.save();
         // Draw score
-        ctx.shadowColor = '#00d4ff';
+        ctx.shadowColor = '#00e599';
         ctx.shadowBlur = 8;
-        ctx.fillStyle = '#00d4ff';
+        ctx.fillStyle = '#00e599';
         ctx.font = 'bold 38px "SF Pro Display", sans-serif';
         ctx.textAlign = 'center'; // Center-align text
         const scoreText = this.gameState.getScore().toString();
@@ -145,10 +145,10 @@ export class UIManager {
         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
         // Draw title
-        ctx.shadowColor = '#00d4ff';
+        ctx.shadowColor = '#00e599';
         ctx.shadowBlur = 15;
         ctx.font = 'bold 48px "SF Pro Display", sans-serif';
-        ctx.fillStyle = '#00d4ff';
+        ctx.fillStyle = '#00e599';
         ctx.textAlign = 'center';
         ctx.fillText('PUMPY PILLS', this.canvas.width / 2, this.canvas.height / 2 - 100);
         ctx.shadowBlur = 0;
@@ -165,7 +165,7 @@ export class UIManager {
 
         // Draw start instructions
         ctx.font = 'bold 14px "SF Pro Display", sans-serif';
-        ctx.fillStyle = '#00d4ff';
+        ctx.fillStyle = '#00e599';
         ctx.fillText('SPACEBAR or CLICK to start trading', this.canvas.width / 2, this.canvas.height / 2 + 50);
 
         // Draw character selection

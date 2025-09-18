@@ -201,7 +201,7 @@
                     particles.add(
                         bird.x - PHYSICS.BIRD_RADIUS/2 + Math.random() * PHYSICS.BIRD_RADIUS,
                         bird.y + PHYSICS.BIRD_RADIUS/2,
-                        '#00d4ff'
+                        '#00e599'
                     );
                 }
             } catch (error) {
@@ -269,7 +269,7 @@
                         } catch (e) {}
                         gameState.updatePortfolio(difficulty.level * 1500);
                         particles.add(bird.x, bird.y, '#ffd700');
-                        particles.add(bird.x, bird.y, '#00d4ff');
+                        particles.add(bird.x, bird.y, '#00e599');
                         obstacles.updateDifficulty(difficulty.pipeGap, difficulty.pipeSpacing);
                     }
                 }
@@ -340,6 +340,7 @@
         }
     }
 
+    // --- Volume Bar Floor Decoration ---
     function drawVolumeBars(ctx, canvas, barCount = 48, barHeight = 40) {
         const barWidth = canvas.width / barCount;
         const baseY = canvas.height;
@@ -367,7 +368,8 @@
             }
         }
 
-        ctx.fillStyle = "#3fa97c";
+        // Draw green bars
+        ctx.fillStyle = "#00e599";
         for (let i = 0; i < barCount; i++) {
             const bar = drawVolumeBars.cachedBars[i];
             if (!bar.isRed) {

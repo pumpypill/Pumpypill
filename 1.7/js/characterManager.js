@@ -74,7 +74,7 @@ export class CharacterManager {
         // Draw selected character feedback below character manager
         if (this.selectedCharacter && this.gameState) {
             ctx.font = 'bold 16px "SF Pro Display", sans-serif';
-            ctx.fillStyle = '#26a69a';
+            ctx.fillStyle = '#00e599';
             ctx.textAlign = 'center';
             ctx.fillText(`Selected: ${this.selectedCharacter.name}`, this.canvas.width / 2, centerY + 100); // Positioned below character manager
         }
@@ -98,7 +98,7 @@ export class CharacterManager {
             const x = startX + i * 70;
             const y = centerY;
 
-            ctx.fillStyle = char === this.selectedCharacter ? 'rgba(0, 212, 255, 0.2)' : 'rgba(30, 35, 41, 0.5)';
+            ctx.fillStyle = char === this.selectedCharacter ? 'rgba(0, 229, 153, 0.2)' : 'rgba(30, 35, 41, 0.5)';
             ctx.fillRect(x, y, 60, 60);
 
             if (char.loaded) {
@@ -118,7 +118,7 @@ export class CharacterManager {
             }
 
             if (char === this.selectedCharacter) {
-                ctx.strokeStyle = '#00d4ff';
+                ctx.strokeStyle = '#00e599';
                 ctx.lineWidth = 2;
                 ctx.strokeRect(x, y, 60, 60);
             }

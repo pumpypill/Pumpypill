@@ -6,10 +6,10 @@
     --color-text-primary: #ffffff;
     --color-text-secondary: #b2b5be;
     --color-text-muted: #888888;
-    --color-accent: #00d4ff;
+    --color-accent: #00e599;
     --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
-    --shadow-md: 0 4px 15px rgba(0, 212, 255, 0.2), 0 2px 8px rgba(0, 0, 0, 0.5);
-    --shadow-lg: 0 6px 20px rgba(0, 212, 255, 0.4), 0 4px 12px rgba(0, 0, 0, 0.6);
+    --shadow-md: 0 4px 15px rgba(0, 229, 153, 0.2), 0 2px 8px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 6px 20px rgba(0, 229, 153, 0.4), 0 4px 12px rgba(0, 0, 0, 0.6);
     --gradient-primary: linear-gradient(135deg, #1e2329, #131a26);
     --border-radius: 8px;
     --transition-standard: 0.3s ease;
@@ -86,8 +86,8 @@ canvas {
     transform: scale(0.95);
 }
 .character-option.selected {
-    border-color: #00d4ff;
-    box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+    border-color: #00e599;
+    box-shadow: 0 0 15px rgba(0, 229, 153, 0.5);
 }
 .character-pill {
     width: 20px;
@@ -146,7 +146,7 @@ main {
     padding: 20px;
     box-shadow: 0 0 30px rgba(0,0,0,0.3);
     background: linear-gradient(135deg, #1e2329, #131a26);
-    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.2), 0 2px 8px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 15px rgba(0, 229, 153, 0.2), 0 2px 8px rgba(0, 0, 0, 0.5);
     transition: none; /* Remove hover effect */
 }
 .game-container:hover {
@@ -170,15 +170,15 @@ main {
     box-shadow: 0 0 30px rgba(0,0,0,0.3);
     user-select: text; /* Allow text selection */
     background: linear-gradient(135deg, #1e2329, #131a26);
-    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.2), 0 2px 8px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 15px rgba(0, 229, 153, 0.2), 0 2px 8px rgba(0, 0, 0, 0.5);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 .info-container:hover {
     transform: scale(1.02);
-    box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4), 0 4px 12px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 6px 20px rgba(0, 229, 153, 0.4), 0 4px 12px rgba(0, 0, 0, 0.6);
 }
 .info-container h2 {
-    color: #00d4ff;
+    color: #00e599;
     margin-top: 0;
 }
 .roadmap-container {
@@ -193,12 +193,12 @@ main {
     text-align: left;
     user-select: text; /* Allow text selection */
     background: linear-gradient(135deg, #1e2329, #131a26);
-    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.2), 0 2px 8px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 15px rgba(0, 229, 153, 0.2), 0 2px 8px rgba(0, 0, 0, 0.5);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 .roadmap-container:hover {
     transform: scale(1.02);
-    box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4), 0 4px 12px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 6px 20px rgba(0, 229, 153, 0.4), 0 4px 12px rgba(0, 0, 0, 0.6);
 }
 
 /* Responsive adjustments */
