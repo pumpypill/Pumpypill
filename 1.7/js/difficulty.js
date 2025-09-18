@@ -19,9 +19,7 @@ export class DifficultyManager {
 
     updateDifficulty() {
         this.speed = Math.min(3.2, 1.4 + this.level * 0.08); // Reduced max speed and per-level increment
-        // FIX: enforce global MIN_GAP instead of hardcoded 150 that could undercut OBSTACLES.MIN_GAP
-        const rawGap = this.OBSTACLES.BASE_GAP - this.level * 10 + 10;
-        this.pipeGap = Math.max(this.OBSTACLES.MIN_GAP, rawGap);
+        this.pipeGap = Math.max(150, this.OBSTACLES.BASE_GAP - this.level * 10 + 10); // Slightly wider gap (+10px)
         this.pipeSpacing = Math.max(240, this.OBSTACLES.BASE_SPACING - this.level * 15); // Fixed spacing, decreases with level
     }
 
