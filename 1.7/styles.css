@@ -1,16 +1,15 @@
 /* CSS Custom Properties for consistent theming */
 :root {
-    --color-background: #0b0f14;          /* page background to match app */
-    --color-background-alt: #11161c;      /* card/panel background */
-    --color-border: #1a202a;              /* subtle borders/grid */
-    --color-text-primary: #e5e7eb;
-    --color-text-secondary: #9aa3ad;
-    --color-text-muted: #7c8390;
-    --color-accent: #00e599;
+    --color-background: #0d1421;
+    --color-background-alt: #131a26;
+    --color-border: #1e2329;
+    --color-text-primary: #ffffff;
+    --color-text-secondary: #b2b5be;
+    --color-text-muted: #888888;
+    --color-accent: #00d4ff;
     --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
-    --shadow-md: 0 4px 15px rgba(0, 229, 153, 0.2), 0 2px 8px rgba(0, 0, 0, 0.5);
-    --shadow-lg: 0 6px 20px rgba(0, 229, 153, 0.4), 0 4px 12px rgba(0, 0, 0, 0.6);
-    --gradient-primary: linear-gradient(135deg, #0f1419, #0c1015);
+    --shadow-md: 0 4px 15px rgba(0, 212, 255, 0.2), 0 2px 8px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 6px 20px rgba(0, 212, 255, 0.4), 0 4px 12px rgba(0, 0, 0, 0.6);
     --border-radius: 8px;
     --transition-standard: 0.3s ease;
 }
@@ -25,8 +24,9 @@ body, h1, h2, h3, h4, p, figure, blockquote, dl, dd {
     margin: 0;
 }
 
+/* Body Styles */
 body { 
-    background: var(--color-background); /* updated to theme var */
+    background: #15161b; /* Updated background color */
     color: var(--color-text-primary); 
     font-family: "SF Pro Display", "Segoe UI", system-ui, sans-serif; 
     text-align: center; 
@@ -39,17 +39,21 @@ body {
     min-height: 100vh;
     line-height: 1.5;
 }
+
+/* Canvas Styles */
 canvas { 
     display: block; 
     margin: 0 auto; 
-    background: var(--color-background);   /* unify canvas bg */
-    border: 2px solid var(--color-border); /* subtle border */
+    background: var(--color-background); 
+    border: 2px solid var(--color-border); 
     border-radius: var(--border-radius); 
     box-shadow: var(--shadow-md); 
     cursor: pointer;
     max-width: 100%;
     height: auto;
 }
+
+/* Instructions Section */
 .instructions {
     position: relative;
     bottom: auto;
@@ -60,6 +64,8 @@ canvas {
     margin-top: 16px;
     text-align: center;
 }
+
+/* Character Selection */
 .character-select {
     display: flex;
     justify-content: center;
@@ -86,17 +92,14 @@ canvas {
     transform: scale(0.95);
 }
 .character-option.selected {
-    border-color: #00e599;
-    box-shadow: 0 0 15px rgba(0, 229, 153, 0.5);
+    border-color: #00d4ff;
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
 }
-.character-pill {
-    width: 20px;
-    height: 40px;
-    position: relative;
-}
+
+/* Header Styles */
 header {
     width: 100%;
-    background: #0f1115; /* match bottom bar color from the app */
+    background: #1b1d27; /* Updated background color */
     color: var(--color-accent);
     font-size: 2rem;
     font-weight: bold;
@@ -105,8 +108,9 @@ header {
     box-shadow: var(--shadow-sm);
     text-align: center;
     z-index: 10;
-    border-bottom: 1px solid var(--color-border);
 }
+
+/* Footer Styles */
 footer {
     width: 100%;
     background: var(--color-background-alt);
@@ -120,6 +124,8 @@ footer {
     z-index: 10;
     box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
 }
+
+/* Main Content */
 main {
     flex: 1 0 auto;
     display: flex;
@@ -138,65 +144,70 @@ main {
     flex-direction: column;
     align-items: center;
 }
+
+/* Game Container */
 .game-container {
     width: 100%;
     max-width: 800px;
     margin: 0 auto;
-    background: var(--gradient-primary);
+    background: rgba(19, 26, 38, 0.5);
     border-radius: 10px;
     padding: 20px;
-    box-shadow: 0 4px 15px rgba(0, 229, 153, 0.2), 0 2px 8px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 30px rgba(0,0,0,0.3);
+    background: linear-gradient(135deg, #1e2329, #131a26);
+    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.2), 0 2px 8px rgba(0, 0, 0, 0.5);
     transition: none; /* Remove hover effect */
 }
 .game-container:hover {
     transform: none;
     box-shadow: none;
 }
-.canvas-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    position: relative;
-}
+
+/* Info Container */
 .info-container {
     width: 100%;
     max-width: 800px;
     margin: 20px auto 0;
-    background: var(--gradient-primary);
+    background: rgba(19, 26, 38, 0.5);
     border-radius: 10px;
     padding: 20px;
-    box-shadow: 0 4px 15px rgba(0, 229, 153, 0.2), 0 2px 8px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 30px rgba(0,0,0,0.3);
     user-select: text; /* Allow text selection */
+    background: linear-gradient(135deg, #1e2329, #131a26);
+    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.2), 0 2px 8px rgba(0, 0, 0, 0.5);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 .info-container:hover {
     transform: scale(1.02);
-    box-shadow: 0 6px 20px rgba(0, 229, 153, 0.4), 0 4px 12px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4), 0 4px 12px rgba(0, 0, 0, 0.6);
 }
 .info-container h2 {
-    color: #00e599;
+    color: #00d4ff;
     margin-top: 0;
 }
+
+/* Roadmap Container */
 .roadmap-container {
     width: 100%;
     max-width: 800px;
     margin: 20px auto;
-    background: var(--gradient-primary);
+    background: rgba(19, 26, 38, 0.5);
     border-radius: 10px;
     padding: 20px;
-    box-shadow: 0 4px 15px rgba(0, 229, 153, 0.2), 0 2px 8px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 30px rgba(0,0,0,0.3);
     color: #b2b5be;
     text-align: left;
     user-select: text; /* Allow text selection */
+    background: linear-gradient(135deg, #1e2329, #131a26);
+    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.2), 0 2px 8px rgba(0, 0, 0, 0.5);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 .roadmap-container:hover {
     transform: scale(1.02);
-    box-shadow: 0 6px 20px rgba(0, 229, 153, 0.4), 0 4px 12px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4), 0 4px 12px rgba(0, 0, 0, 0.6);
 }
 
-/* Responsive adjustments */
+/* Responsive Adjustments */
 @media (max-width: 840px) {
     canvas {
         width: 100%;

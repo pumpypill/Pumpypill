@@ -201,7 +201,7 @@
                     particles.add(
                         bird.x - PHYSICS.BIRD_RADIUS/2 + Math.random() * PHYSICS.BIRD_RADIUS,
                         bird.y + PHYSICS.BIRD_RADIUS/2,
-                        '#00e599'
+                        '#00d4ff'
                     );
                 }
             } catch (error) {
@@ -269,7 +269,7 @@
                         } catch (e) {}
                         gameState.updatePortfolio(difficulty.level * 1500);
                         particles.add(bird.x, bird.y, '#ffd700');
-                        particles.add(bird.x, bird.y, '#00e599');
+                        particles.add(bird.x, bird.y, '#00d4ff');
                         obstacles.updateDifficulty(difficulty.pipeGap, difficulty.pipeSpacing);
                     }
                 }
@@ -281,12 +281,12 @@
 
     function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#0b0f14';  // match page background
+        ctx.fillStyle = '#0d1421';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         drawVolumeBars(ctx, canvas, 48, 40);
 
-        ctx.strokeStyle = '#1a202a'; // subtle grid to match border
+        ctx.strokeStyle = '#1a1f2e';
         ctx.lineWidth = 0.5;
         ctx.beginPath();
         const gridOffset = gameState.getScroll() % 50;
@@ -340,7 +340,6 @@
         }
     }
 
-    // --- Volume Bar Floor Decoration ---
     function drawVolumeBars(ctx, canvas, barCount = 48, barHeight = 40) {
         const barWidth = canvas.width / barCount;
         const baseY = canvas.height;
@@ -368,8 +367,7 @@
             }
         }
 
-        // Draw green bars
-        ctx.fillStyle = "#00e599";
+        ctx.fillStyle = "#3fa97c";
         for (let i = 0; i < barCount; i++) {
             const bar = drawVolumeBars.cachedBars[i];
             if (!bar.isRed) {
