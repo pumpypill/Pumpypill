@@ -61,7 +61,8 @@ main {
 .content-container {
     width: 100%;
     max-width: 800px;
-    margin: 0 auto 28px auto;
+    /* Added 12px top margin to create space between header and game canvas */
+    margin: 12px auto 28px auto;
     padding: 0 12px;
 }
 
