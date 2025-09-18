@@ -29,6 +29,7 @@ export class PerformanceMonitor {
         this.frameTimeHistory.fill(0); // Reset the circular buffer
         this.frameTimeIndex = 0;
         this.frameTimeVariance = 0;
+        this.lastResetTime = 0; // added: ensure periodic reset schedule restarts
     }
 
     start(timestamp) {

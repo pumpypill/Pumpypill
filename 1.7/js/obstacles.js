@@ -56,25 +56,27 @@ export class Obstacles {
         // Adjust gap size for special patterns
         let currentGap = this.pipeGap;
         if (this.currentPattern === 'narrow') {
-            // Ensure gap is never too small for player to navigate
-            currentGap = Math.max(this.pipeGap * 0.75, this.OBSTACLES.MIN_GAP + 10); // Tighter gap for narrow pattern
+            currentGap = Math.max(this.pipeGap * 0.75, this.OBSTACLES.MIN_GAP); // keep ≥ MIN_GAP
         } else if (Math.random() < 0.1) {
-            // Occasional wider gaps for breathing room
-            currentGap = this.pipeGap * 1.2; // Slightly wider gap as a breather
+            currentGap = Math.min(this.pipeGap * 1.2, this.pipeGap + 80); // modest wider breather cap
         }
+        // Rug adjustment then final clamp
+        const rugAdjustment = 10;
+        currentGap = Math.max(this.OBSTACLES.MIN_GAP, currentGap - rugAdjustment);
 
-        // Reduce the gap slightly to account for rug size
-        const rugAdjustment = 10; // Adjust this value based on rug size
-        currentGap = Math.max(currentGap - rugAdjustment, this.OBSTACLES.MIN_GAP);
+        // Clamp center after final gap to avoid overflow
+        const minGapPos = Math.max(currentGap / 2, 50);
+        const maxGapPos = this.canvasHeight - Math.max(currentGap / 2, 50);
+        gapCenter = Math.max(minGapPos, Math.min(maxGapPos, gapCenter));
 
         const obstacle = {
-            x: x,
+            x,
             scored: false,
-            top: Math.max(0, gapCenter - currentGap / 2), // Ensure top pipe is visible
-            bottom: Math.min(this.canvasHeight, gapCenter + currentGap / 2), // Ensure bottom pipe is visible
-            // Add a small random offset to pipe heights for visual variety (but cap for performance)
-            topHeight: Math.floor(Math.random() * 10),
-            bottomHeight: Math.floor(Math.random() * 10),
+            top: Math.max(0, gapCenter - currentGap / 2),
+            bottom: Math.min(this.canvasHeight, gapCenter + currentGap / 2),
+            // Removed random topHeight/bottomHeight that visually narrowed safe gap
+            topHeight: 0,
+            bottomHeight: 0,
             type: this.currentPattern
         };
 
@@ -231,7 +233,6 @@ export class Obstacles {
     }
 
     draw(ctx, level, canvasHeight) {
-        // Save context state
         ctx.save();
 
         const hue = (level * 30) % 360;
@@ -299,7 +300,7 @@ export class Obstacles {
             // Draw top pipe with rug-like pattern
             if (pipe.top > 0) {
                 const topY = 0;
-                const topH = pipe.top + pipe.topHeight;
+                const topH = pipe.top; // removed + topHeight to align visuals with collision gap
                 if (topH > 0) {
                     ctx.fillStyle = fillColor;
                     ctx.fillRect(pipe.x, topY, this.OBSTACLES.WIDTH, topH);
@@ -316,27 +317,17 @@ export class Obstacles {
 
             // Draw bottom pipe with rug-like pattern
             if (pipe.bottom < canvasHeight) {
-                const bottomY = pipe.bottom - pipe.bottomHeight;
-                const bottomH = canvasHeight - bottomY;
+                const bottomY = pipe.bottom; // start exactly at gap boundary
+                const bottomH = canvasHeight - bottomY; // removed - bottomHeight
                 if (bottomH > 0) {
                     ctx.fillStyle = fillColor;
-                    ctx.fillRect(
-                        pipe.x,
-                        bottomY,
-                        this.OBSTACLES.WIDTH,
-                        bottomH
-                    );
+                    ctx.fillRect(pipe.x, bottomY, this.OBSTACLES.WIDTH, bottomH);
 
                     // Clip pattern strictly inside the rect so it cannot overlap shape
                     this.drawPatternClipped(ctx, pipe.x, bottomY, this.OBSTACLES.WIDTH, bottomH, pipe.type, hue);
 
                     ctx.strokeStyle = strokeColor;
-                    ctx.strokeRect(
-                        pipe.x,
-                        bottomY,
-                        this.OBSTACLES.WIDTH,
-                        bottomH
-                    );
+                    ctx.strokeRect(pipe.x, bottomY, this.OBSTACLES.WIDTH, bottomH);
 
                     this.drawRugFringe(ctx, pipe.x, bottomY, this.OBSTACLES.WIDTH, hue, true);
                 }
@@ -611,6 +602,15 @@ export class Obstacles {
                     ctx.beginPath();
                     ctx.moveTo(x + j + patternSize/2, y + i);
                     ctx.lineTo(x + j + patternSize, y + i + patternSize/2);
+                    ctx.lineTo(x + j + patternSize/2, y + i + patternSize);
+                    ctx.lineTo(x + j, y + i + patternSize/2);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+            }
+        }
+    }
+}
                     ctx.lineTo(x + j + patternSize/2, y + i + patternSize);
                     ctx.lineTo(x + j, y + i + patternSize/2);
                     ctx.closePath();
