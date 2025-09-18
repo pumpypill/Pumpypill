@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pumpy Pill</title>
-    <link rel="stylesheet" href="./1.7/styles.css">
+    <link rel="stylesheet" href="/1.7/styles.css">
 </head>
 <body>
     <header>
-        <img src="./1.7/assets/characters/cupsey.png" alt="Cupsey Logo" style="height:48px;width:auto;vertical-align:middle;display:inline-block;">
+        <img src="/1.7/assets/characters/cupsey.png" alt="Cupsey Logo" style="height:48px;width:auto;vertical-align:middle;display:inline-block;">
     </header>
     <main>
         <h1 style="text-align:center;margin-bottom:16px;">Pumpy Pill</h1>
@@ -52,7 +52,426 @@
         THIS IS JUST A BETA. NO TOKEN AT THIS TIME
     </footer>
     <script type="module">
-        // ...existing JavaScript code from 1.6.6.html...
+    // Simple error tracking
+    window.addEventListener('error', function(e) {
+        console.error('Runtime error:', e.error && e.error.message ? e.error.message : e.message);
+    }, {passive: true});
+
+    window.addEventListener('unhandledrejection', function(e) {
+        console.error('Unhandled promise rejection:', e.reason);
+    }, {passive: true});
+
+    // NOTE: import from /1.7/js instead of relative ./js
+    import { Player } from "/1.7/js/player.js";
+    import { Obstacles } from "/1.7/js/obstacles.js";
+    import { ChartTrail } from "/1.7/js/chart.js";
+    import { Particles } from "/1.7/js/particles.js";
+    import { DifficultyManager } from "/1.7/js/difficulty.js";
+    import { CharacterManager } from "/1.7/js/characterManager.js";
+    import { GameState } from "/1.7/js/gameState.js";
+    import { InputManager } from "/1.7/js/inputManager.js";
+    import { UIManager } from "/1.7/js/uiManager.js";
+    import { PerformanceMonitor } from "/1.7/js/performanceMonitor.js";
+
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Game constants
+    const PHYSICS = {
+        GRAVITY: 0.10,
+        JUMP: -3.3,
+        MAX_FALL: 3.8,
+        BIRD_RADIUS: 24
+    };
+
+    const OBSTACLES = {
+        WIDTH: 70,
+        BASE_GAP: 200,
+        BASE_SPACING: 300,
+        MIN_GAP: 160
+    };
+
+    const CHART = {
+        CANDLE_WIDTH: 20,
+        HEIGHT: 140,
+        BOTTOM_MARGIN: 25,
+        MAX_CANDLES: 50
+    };
+
+    // Character definitions (paths updated to /1.7/assets)
+    const CHARACTERS = [
+        {
+            id: 'Alon',
+            name: 'Alon',
+            image: new Image(),
+            src: '/1.7/assets/characters/alon.png',
+            width: 68,
+            height: 68,
+            color: '#ffd700'
+        },
+        {
+            id: 'cupsey',
+            name: 'Cupsey',
+            image: new Image(),
+            src: '/1.7/assets/characters/cupsey.png',
+            width: 68,
+            height: 68,
+            color: '#4CAF50'
+        }
+    ];
+
+    // Initialize game state management
+    const gameState = new GameState();
+    gameState.setLoading();
+
+    // Add loading state
+    let assetsLoaded = false;
+    let loadingProgress = 0;
+    const totalAssets = CHARACTERS.length;
+    let loadedAssets = 0;
+
+    // Improved character loading
+    CHARACTERS.forEach(char => {
+        char.loaded = false;
+        char.image.onerror = function() {
+            if (!char.retryCount || char.retryCount < 3) {
+                char.retryCount = (char.retryCount || 0) + 1;
+                setTimeout(() => char.image.src = char.src, 1000);
+            } else {
+                console.error(`Failed to load image after retries: ${char.src}`);
+                char.loaded = false;
+                loadedAssets++;
+                loadingProgress = (loadedAssets / totalAssets) * 100;
+                if (loadedAssets === totalAssets && CHARACTERS.every(c => c.loaded)) {
+                    assetsLoaded = true;
+                    gameState.setStart();
+                }
+            }
+        };
+        char.image.onload = function() {
+            console.log(`Successfully loaded: ${char.src}`);
+            char.loaded = true;
+            loadedAssets++;
+            loadingProgress = (loadedAssets / totalAssets) * 100;
+            if (loadedAssets === totalAssets && CHARACTERS.every(c => c.loaded)) {
+                assetsLoaded = true;
+                gameState.setStart();
+            }
+        };
+        char.image.src = char.src;
+    });
+
+    // Character system
+    const characterManager = new CharacterManager(CHARACTERS, canvas, gameState);
+
+    // Player
+    let bird = new Player(
+        canvas.width * 0.35,
+        canvas.height / 2,
+        characterManager.getSelectedCharacter(),
+        PHYSICS
+    );
+
+    // Difficulty system
+    const difficulty = new DifficultyManager(OBSTACLES);
+
+    // Obstacles system
+    const obstacles = new Obstacles(canvas.height, OBSTACLES, difficulty.pipeGap, difficulty.pipeSpacing);
+
+    // Particles system
+    const particles = new Particles(12);
+
+    // Chart system
+    const chart = new ChartTrail(canvas, CHART);
+
+    // Input manager
+    function handleJumpAction() {
+        if (gameState.isStartScreen()) {
+            if (assetsLoaded) {
+                resetGame();
+                gameState.startGame();
+            }
+        } else if (gameState.isGameOver()) {
+            resetGame();
+            gameState.startGame();
+        } else if (gameState.isPlaying()) {
+            try {
+                bird.jump(PHYSICS.JUMP);
+                for (let i = 0; i < 3; i++) {
+                    particles.add(
+                        bird.x - PHYSICS.BIRD_RADIUS/2 + Math.random() * PHYSICS.BIRD_RADIUS,
+                        bird.y + PHYSICS.BIRD_RADIUS/2,
+                        '#00d4ff'
+                    );
+                }
+            } catch (error) {
+                console.error('Jump error:', error);
+            }
+        }
+    }
+    const inputManager = new InputManager(canvas, gameState, handleJumpAction, characterManager);
+
+    // UI Manager
+    const uiManager = new UIManager(canvas, gameState, difficulty);
+
+    // Performance Monitor
+    const performanceMonitor = new PerformanceMonitor();
+    const debugMode = false;
+    performanceMonitor.toggle(debugMode);
+
+    // Preload level up sound (path updated to /1.7/assets)
+    const levelUpSound = new Audio();
+    levelUpSound.preload = 'auto';
+    levelUpSound.src = '/1.7/assets/sounds/level_up.mp3';
+
+    function update(timestamp) {
+        performanceMonitor.update(timestamp);
+        if (!assetsLoaded || !gameState.isPlaying()) return;
+
+        bird.update(PHYSICS.GRAVITY, PHYSICS.MAX_FALL);
+
+        gameState.updateWorldX(difficulty.speed);
+        gameState.updateScroll(difficulty.speed);
+
+        obstacles.updatePipes(difficulty.speed, canvas.width);
+
+        if (bird.y + PHYSICS.BIRD_RADIUS > canvas.height - 5 ||
+            bird.y - PHYSICS.BIRD_RADIUS < 5) {
+            gameState.endGame();
+            particles.add(bird.x, bird.y, '#ef5350');
+            return;
+        }
+
+        try {
+            if (obstacles.checkCollision(bird, PHYSICS)) {
+                gameState.endGame();
+                particles.add(bird.x, bird.y, '#ef5350');
+                return;
+            }
+        } catch (error) {
+            console.error('Error checking collision:', error);
+            gameState.endGame();
+            return;
+        }
+
+        if (obstacles.pipes && obstacles.pipes.length > 0) {
+            for (let i = 0; i < obstacles.pipes.length; i++) {
+                const pipe = obstacles.pipes[i];
+                if (pipe && !pipe.scored && pipe.x + OBSTACLES.WIDTH / 2 < bird.x) {
+                    pipe.scored = true;
+                    gameState.incrementScore(1);
+                    gameState.updatePortfolio(Math.floor(750 * (1 + difficulty.level * 0.08)));
+                    particles.add(bird.x, bird.y, '#26a69a');
+                    if (difficulty.levelUp()) {
+                        try {
+                            levelUpSound.currentTime = 0;
+                            levelUpSound.play();
+                        } catch (e) {}
+                        gameState.updatePortfolio(difficulty.level * 1500);
+                        particles.add(bird.x, bird.y, '#ffd700');
+                        particles.add(bird.x, bird.y, '#00d4ff');
+                        obstacles.updateDifficulty(difficulty.pipeGap, difficulty.pipeSpacing);
+                    }
+                }
+            }
+        }
+
+        particles.update();
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#0d1421';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        drawVolumeBars(ctx, canvas, 48, 40);
+
+        ctx.strokeStyle = '#1a1f2e';
+        ctx.lineWidth = 0.5;
+        ctx.beginPath();
+        const gridOffset = gameState.getScroll() % 50;
+        for (let x = -gridOffset; x < canvas.width + 50; x += 50) {
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, canvas.height);
+        }
+        for (let y = 0; y < canvas.height; y += 50) {
+            ctx.moveTo(0, y);
+            ctx.lineTo(canvas.width, y);
+        }
+        ctx.stroke();
+
+        try {
+            chart.updateChart(gameState.getWorldX(), bird.y);
+            chart.draw(ctx, gameState.getWorldX(), bird.x, bird.y);
+        } catch (error) {
+            console.error('Chart error:', error);
+        }
+
+        try {
+            obstacles.draw(ctx, difficulty.level, canvas.height);
+        } catch (error) {
+            console.error('Obstacles draw error:', error);
+        }
+
+        try {
+            bird.draw(ctx, PHYSICS.BIRD_RADIUS);
+        } catch (error) {
+            console.error('Player draw error:', error);
+        }
+
+        particles.draw(ctx);
+
+        if (gameState.isLoading()) {
+            uiManager.drawLoadingScreen(loadingProgress);
+        } else if (gameState.isStartScreen()) {
+            uiManager.drawStartScreen(characterManager);
+        } else if (gameState.isGameOver()) {
+            uiManager.drawGameOverScreen(characterManager);
+        } else {
+            uiManager.drawUI();
+        }
+
+        if (debugMode) {
+            uiManager.drawDebugInfo(
+                performanceMonitor.getFPS(),
+                performanceMonitor.getFrameTime().toFixed(1),
+                performanceMonitor.getFrameTimeVariance().toFixed(1)
+            );
+        }
+    }
+
+    function drawVolumeBars(ctx, canvas, barCount = 48, barHeight = 40) {
+        const barWidth = canvas.width / barCount;
+        const baseY = canvas.height;
+
+        if (!drawVolumeBars.cachedBars || drawVolumeBars.cachedBars.length !== barCount) {
+            drawVolumeBars.cachedBars = [];
+            for (let i = 0; i < barCount; i++) {
+                drawVolumeBars.cachedBars[i] = {
+                    height: Math.floor(
+                        (Math.sin(i * 2.1) + 1) * 0.5 * (barHeight * 0.7) +
+                        (Math.abs(Math.cos(i * 1.7)) * (barHeight * 0.3))
+                    ),
+                    isRed: i % 2 === 0
+                };
+            }
+        }
+
+        ctx.globalAlpha = 0.18;
+
+        ctx.fillStyle = "#e05a5a";
+        for (let i = 0; i < barCount; i++) {
+            const bar = drawVolumeBars.cachedBars[i];
+            if (bar.isRed) {
+                ctx.fillRect(i * barWidth, baseY - bar.height, barWidth - 1, bar.height);
+            }
+        }
+
+        ctx.fillStyle = "#3fa97c";
+        for (let i = 0; i < barCount; i++) {
+            const bar = drawVolumeBars.cachedBars[i];
+            if (!bar.isRed) {
+                ctx.fillRect(i * barWidth, baseY - bar.height, barWidth - 1, bar.height);
+            }
+        }
+
+        ctx.globalAlpha = 1.0;
+    }
+
+    function resetGame() {
+        bird = new Player(
+            canvas.width * 0.35,
+            canvas.height / 2,
+            characterManager.getSelectedCharacter(),
+            PHYSICS
+        );
+
+        difficulty.reset();
+        obstacles.reset(canvas.height, difficulty.pipeGap, difficulty.pipeSpacing);
+        chart.reset();
+        particles.reset();
+        gameState.reset();
+        performanceMonitor.reset();
+
+        console.log("Game reset complete, gameOver =", gameState.isGameOver());
+    }
+
+    function gameLoop(timestamp) {
+        try {
+            if (performanceMonitor.lastTime === 0) {
+                performanceMonitor.start(timestamp);
+            }
+            update(timestamp);
+            draw();
+        } catch (error) {
+            console.error('Game loop error:', error);
+        }
+        requestAnimationFrame(gameLoop);
+    }
+
+    let currentNotificationAnimation = null;
+
+    function updateUIWithPattern(pattern) {
+        uiManager.currentPattern = pattern;
+
+        if (gameState.isPlaying() && pattern) {
+            if (currentNotificationAnimation) {
+                cancelAnimationFrame(currentNotificationAnimation);
+                currentNotificationAnimation = null;
+            }
+
+            const notification = {
+                text: pattern.charAt(0).toUpperCase() + pattern.slice(1) + " pattern!",
+                x: canvas.width / 2,
+                y: 100,
+                opacity: 1.0,
+                color: getPatternColor(pattern)
+            };
+
+            let frameCount = 0;
+            const animateNotification = () => {
+                frameCount++;
+                ctx.save();
+                ctx.globalAlpha = notification.opacity;
+                ctx.font = 'bold 24px "SF Pro Display", sans-serif';
+                ctx.fillStyle = notification.color;
+                ctx.textAlign = 'center';
+                ctx.fillText(notification.text, notification.x, notification.y);
+                ctx.restore();
+
+                notification.y -= 0.5;
+                notification.opacity -= 0.01;
+
+                if (frameCount < 100 && notification.opacity > 0) {
+                    currentNotificationAnimation = requestAnimationFrame(animateNotification);
+                } else {
+                    currentNotificationAnimation = null;
+                }
+            };
+
+            currentNotificationAnimation = requestAnimationFrame(animateNotification);
+        }
+    }
+
+    function getPatternColor(pattern) {
+        switch(pattern) {
+            case 'staircase': return '#E57373';
+            case 'wave': return '#64B5F6';
+            case 'zigzag': return '#FFD54F';
+            case 'narrow': return '#9575CD';
+            default: return '#81C784';
+        }
+    }
+
+    const originalSwitchPattern = obstacles.switchPattern;
+    obstacles.switchPattern = function() {
+        originalSwitchPattern.apply(this, arguments);
+        updateUIWithPattern(this.currentPattern);
+    };
+
+    updateUIWithPattern(obstacles.currentPattern);
+
+    gameLoop();
     </script>
 </body>
 </html>
