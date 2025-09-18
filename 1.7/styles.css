@@ -255,75 +255,139 @@ footer::before {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 32px auto;
-    padding: 24px;
+    padding: 32px 16px;
     background: linear-gradient(120deg, #181c24 80%, #23243a 100%);
     border-radius: 16px;
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.18), 0 2px 8px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    margin: 32px auto;
+    max-width: 800px;
 }
 .roadmap-container h2 {
     color: var(--color-accent);
-    margin-bottom: 16px;
+    margin-bottom: 24px;
     text-align: center;
 }
 .roadmap-row {
     display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
+    align-items: center;
+    justify-content: space-between;
     width: 100%;
-    max-width: 1200px;
+    position: relative;
 }
-.roadmap-card {
-    flex: 1 1 calc(33.333% - 20px);
-    max-width: calc(33.333% - 20px);
-    background: linear-gradient(135deg, #1e2329, #131a26);
+.roadmap-checkpoint {
+    background: var(--color-background-alt);
+    border: 2px solid var(--color-accent);
     border-radius: 12px;
-    padding: 20px;
+    padding: 16px;
+    width: 30%;
+    text-align: center;
     box-shadow: var(--shadow-md);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
 }
-.roadmap-card:hover {
-    transform: translateY(-8px);
+.roadmap-checkpoint:hover {
+    transform: translateY(-5px);
     box-shadow: var(--shadow-lg);
 }
-.roadmap-icon {
-    width: 64px;
-    height: 64px;
-    margin-bottom: 16px;
-}
-.roadmap-icon img {
-    width: 100%;
-    height: auto;
-}
-.roadmap-content h3 {
-    color: var(--color-text-primary);
-    font-size: 1.2rem;
+.roadmap-checkpoint h3 {
+    color: var(--color-accent);
     margin-bottom: 8px;
+    font-size: 1.2rem;
 }
-.roadmap-content p {
+.roadmap-checkpoint p {
     color: var(--color-text-secondary);
     font-size: 0.9rem;
     line-height: 1.4;
 }
-
-/* Responsive adjustments */
-@media (max-width: 840px) {
-    .roadmap-card {
-        flex: 1 1 calc(50% - 20px);
-        max-width: calc(50% - 20px);
-    }
+.roadmap-connector {
+    flex: 1;
+    height: 4px;
+    background: var(--color-accent);
+    margin: 0 8px;
+    position: relative;
+}
+.roadmap-connector::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 12px;
+    background: var(--color-accent);
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(110, 231, 183, 0.5);
 }
 
-@media (max-width: 600px) {
-    .roadmap-card {
-        flex: 1 1 100%;
-        max-width: 100%;
-    }
+/* Our Mission Container */
+.mission-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 32px auto 0;
+    background: linear-gradient(120deg, #181c24 80%, #23243a 100%);
+    border-radius: 16px;
+    padding: 28px 32px 28px 56px;
+    box-shadow: 0 2px 16px 0 rgba(255, 215, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.18);
+    position: relative;
+    border-left: 6px solid var(--color-accent);
+    animation: roadmap-fadein 1.2s cubic-bezier(.4,2,.6,1);
+    transition: box-shadow 0.3s, border-color 0.3s;
+}
+.mission-container h2 {
+    color: var(--color-accent);
+}
+
+/* About Us Container */
+.about-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 32px auto 0;
+    background: linear-gradient(120deg, #181c24 80%, #23243a 100%);
+    border-radius: 16px;
+    padding: 28px 32px 28px 56px;
+    box-shadow: 0 2px 16px 0 rgba(255, 215, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.18);
+    position: relative;
+    border-left: 6px solid var(--color-accent);
+    animation: roadmap-fadein 1.2s cubic-bezier(.4,2,.6,1);
+    transition: box-shadow 0.3s, border-color 0.3s;
+}
+.about-container h2 {
+    color: var(--color-accent);
+}
+
+/* Contact Us Container */
+.contact-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 32px auto 0;
+    background: linear-gradient(120deg, #181c24 80%, #23243a 100%);
+    border-radius: 16px;
+    padding: 28px 32px 28px 56px;
+    box-shadow: 0 2px 16px 0 rgba(255, 215, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.18);
+    position: relative;
+    border-left: 6px solid var(--color-accent);
+    animation: roadmap-fadein 1.2s cubic-bezier(.4,2,.6,1);
+    transition: box-shadow 0.3s, border-color 0.3s;
+}
+.contact-container h2 {
+    color: var(--color-accent);
+}
+
+/* Bug Reports and Feature Requests Container */
+.bugs-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 32px auto 0;
+    background: linear-gradient(120deg, #181c24 80%, #23243a 100%);
+    border-radius: 16px;
+    padding: 28px 32px 28px 56px;
+    box-shadow: 0 2px 16px 0 rgba(255, 215, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.18);
+    position: relative;
+    border-left: 6px solid var(--color-accent);
+    animation: roadmap-fadein 1.2s cubic-bezier(.4,2,.6,1);
+    transition: box-shadow 0.3s, border-color 0.3s;
+}
+.bugs-container h2 {
+    color: var(--color-accent);
 }
 
 /* Ensure the very last content block has breathing room above the footer */
