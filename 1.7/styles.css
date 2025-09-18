@@ -252,16 +252,29 @@ footer::before {
 
 /* Remove glow behind specified containers */
 .info-container,
-.mission-container,
-.about-container,
-.contact-container,
-.bugs-container {
+.mission-container {
     box-shadow: none;
 }
 
-/* Remove hover glow on Game Instructions card */
-.info-container:hover {
-    box-shadow: none;
+/* Card styling for About/Contact/Bugs sections (restored) */
+.about-container,
+.contact-container,
+.bugs-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 24px auto 0;
+    padding: 20px 24px;
+    background: linear-gradient(120deg, #181c24 80%, #23243a 100%);
+    border-radius: 16px;
+    border-left: 6px solid var(--color-accent);
+    box-shadow: 0 2px 16px 0 rgba(0, 212, 255, 0.10), 0 2px 8px rgba(0, 0, 0, 0.25);
+    transition: box-shadow 0.3s, border-color 0.3s;
+}
+.about-container h2,
+.contact-container h2,
+.bugs-container h2 {
+    color: var(--color-accent);
+    letter-spacing: 1px;
 }
 
 /* Roadmap Container - Timeline Step */
@@ -439,6 +452,11 @@ a:focus-visible {
         padding: 0 10px;
         margin-bottom: 20px;
     }
+    .about-container,
+    .contact-container,
+    .bugs-container {
+        padding: 15px;
+    }
 }
 
 @media (max-width: 600px) {
@@ -457,11 +475,19 @@ a:focus-visible {
     .roadmap-container h2 {
         font-size: 1.4rem;
     }
+    .about-container h2,
+    .contact-container h2,
+    .bugs-container h2 {
+        font-size: 1.4rem;
+    }
     .info-container, 
     .roadmap-container {
         font-size: 0.9rem;
     }
-    .info-container, .roadmap-container {
+    .about-container,
+    .contact-container,
+    .bugs-container {
+        font-size: 0.95rem;
         padding-left: 12px;
         padding-right: 8px;
     }
