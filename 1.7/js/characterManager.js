@@ -68,7 +68,8 @@ export class CharacterManager {
         
         // Position based on game state
         const isGameOver = this.gameState ? this.gameState.isGameOver() : false;
-        const centerY = isGameOver ? this.canvas.height / 2 + 150 : this.canvas.height / 2 + 80; // Adjusted to avoid text overlay
+        // Increased start screen offset from +80 to +120 for more space below instructions
+        const centerY = isGameOver ? this.canvas.height / 2 + 150 : this.canvas.height / 2 + 120;
         this._drawSelectionAt(ctx, centerY);
 
         // Draw selected character feedback below character manager
