@@ -6,7 +6,7 @@
     --color-text-primary: #ffffff;
     --color-text-secondary: #b2b5be;
     --color-text-muted: #888888;
-    --color-accent: #00d4ff;
+    --color-accent: #6ee7b7; /* Mint accent from screenshot */
     --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
     --shadow-md: 0 4px 15px rgba(0, 212, 255, 0.2), 0 2px 8px rgba(0, 0, 0, 0.5);
     --shadow-lg: 0 6px 20px rgba(0, 212, 255, 0.4), 0 4px 12px rgba(0, 0, 0, 0.6);
@@ -74,8 +74,8 @@ header::after {
     display: block;
     height: 3px;
     width: 100%;
-    background: linear-gradient(90deg, #00d4ff 0%, #ffd700 100%);
-    box-shadow: 0 0 8px #00d4ff88;
+    background: linear-gradient(90deg, var(--color-accent) 0%, #34d399 100%);
+    box-shadow: 0 0 8px rgba(110, 231, 183, 0.5);
     position: absolute;
     left: 0;
     bottom: 0;
@@ -97,15 +97,15 @@ footer {
     z-index: 10;
     box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
     background: linear-gradient(90deg, #131a26 80%, #23243a 100%);
-    border-top: 2px solid #00d4ff44;
+    border-top: 2px solid rgba(110, 231, 183, 0.27);
 }
 footer::before {
     content: "";
     display: block;
     height: 2px;
     width: 100%;
-    background: linear-gradient(90deg, #ffd700 0%, #00d4ff 100%);
-    box-shadow: 0 0 8px #ffd70088;
+    background: linear-gradient(90deg, #34d399 0%, var(--color-accent) 100%);
+    box-shadow: 0 0 8px rgba(52, 211, 153, 0.5);
     position: absolute;
     left: 0;
     top: 0;
@@ -124,12 +124,12 @@ footer::before {
     margin-top: 16px;
     text-align: center;
     display: inline-block;
-    background: linear-gradient(90deg, #23243a 60%, #00d4ff22 100%);
+    background: linear-gradient(90deg, #23243a 60%, rgba(110, 231, 183, 0.13) 100%);
     padding: 10px 32px;
     border-radius: 32px;
-    box-shadow: 0 4px 16px 0 #00d4ff22;
+    box-shadow: 0 4px 16px 0 rgba(110, 231, 183, 0.13);
     animation: pill-bounce 2.5s infinite cubic-bezier(.4,1.6,.6,1);
-    border: 1.5px solid #00d4ff44;
+    border: 1.5px solid rgba(110, 231, 183, 0.27);
 }
 @keyframes pill-bounce {
     0%, 100% { transform: translateY(0);}
@@ -167,43 +167,28 @@ footer::before {
     box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
 }
 
-/* Game Container - Glassmorphism & Animated Border */
+/* Game Container - revert to simple card style */
 .game-container {
     width: 100%;
     max-width: 800px;
     margin: 0 auto;
-    background: rgba(30, 40, 60, 0.45);
-    border-radius: 22px;
-    padding: 28px 24px 24px 24px;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37), 0 0 0 2px #00d4ff44;
-    backdrop-filter: blur(10px);
-    border: 2px solid transparent;
+    background: linear-gradient(135deg, #1e2329, #131a26);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.2), 0 2px 8px rgba(0, 0, 0, 0.5);
+    transition: none;
+    border: none;
     position: relative;
-    overflow: hidden;
-    animation: glass-fadein 1s cubic-bezier(.4,2,.6,1);
+    overflow: visible;
+    /* Removed: glassmorphism, blur, animated border, extra padding, border-radius, etc. */
 }
-@keyframes glass-fadein {
-    from { opacity: 0; transform: translateY(40px) scale(0.98);}
-    to   { opacity: 1; transform: none;}
-}
-.game-container::before {
-    content: "";
-    position: absolute;
-    inset: -2px;
-    border-radius: 24px;
-    padding: 2px;
-    background: conic-gradient(from 90deg, #00d4ff, #ffd700, #00d4ff 90%);
-    z-index: 0;
-    filter: blur(2px);
-    opacity: 0.7;
-    animation: border-rotate 6s linear infinite;
-}
-@keyframes border-rotate {
-    100% { transform: rotate(1turn);}
+.game-container:hover {
+    transform: none;
+    box-shadow: none;
 }
 .game-container > * {
-    position: relative;
-    z-index: 1;
+    position: static;
+    z-index: auto;
 }
 
 /* Info Container - Card with colored border and fade-in */
@@ -215,7 +200,7 @@ footer::before {
     border-radius: 18px;
     padding: 24px 32px 24px 20px;
     box-shadow: 0 4px 32px 0 rgba(0, 212, 255, 0.10), 0 2px 8px rgba(0, 0, 0, 0.25);
-    border-left: 6px solid #00d4ff;
+    border-left: 6px solid var(--color-accent);
     animation: info-fadein 1.2s cubic-bezier(.4,2,.6,1);
     transition: box-shadow 0.3s, border-color 0.3s;
 }
@@ -225,10 +210,10 @@ footer::before {
 }
 .info-container:hover {
     box-shadow: 0 8px 32px 0 rgba(0, 212, 255, 0.18), 0 4px 16px rgba(0, 0, 0, 0.35);
-    border-left: 6px solid #ffd700;
+    border-left: 6px solid #a7f3d0; /* lighter mint on hover */
 }
 .info-container h2 {
-    color: #00d4ff;
+    color: var(--color-accent);
     margin-top: 0;
     letter-spacing: 1px;
 }
@@ -243,13 +228,13 @@ footer::before {
     padding: 28px 32px 28px 56px;
     box-shadow: 0 2px 16px 0 rgba(255, 215, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.18);
     position: relative;
-    border-left: 6px solid #ffd700;
+    border-left: 6px solid var(--color-accent);
     animation: roadmap-fadein 1.2s cubic-bezier(.4,2,.6,1);
     transition: box-shadow 0.3s, border-color 0.3s;
 }
 .roadmap-container:nth-of-type(even) {
     background: linear-gradient(120deg, #23243a 80%, #181c24 100%);
-    border-left: 6px solid #00d4ff;
+    border-left: 6px solid #34d399; /* darker mint alternate */
 }
 .roadmap-container::before {
     content: "";
@@ -259,21 +244,21 @@ footer::before {
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    background: radial-gradient(circle, #ffd700 60%, #00d4ff 100%);
-    box-shadow: 0 0 8px #ffd70088;
+    background: radial-gradient(circle, #a7f3d0 60%, #34d399 100%); /* mint dot */
+    box-shadow: 0 0 8px rgba(110, 231, 183, 0.5);
     z-index: 2;
 }
 .roadmap-container:nth-of-type(even)::before {
-    background: radial-gradient(circle, #00d4ff 60%, #ffd700 100%);
-    box-shadow: 0 0 8px #00d4ff88;
+    background: radial-gradient(circle, #34d399 60%, #a7f3d0 100%);
+    box-shadow: 0 0 8px rgba(52, 211, 153, 0.5);
 }
 .roadmap-container h2 {
-    color: #ffd700;
+    color: #a7f3d0; /* light mint title */
     margin-top: 0;
     letter-spacing: 1px;
 }
 .roadmap-container:nth-of-type(even) h2 {
-    color: #00d4ff;
+    color: var(--color-accent);
 }
 @keyframes roadmap-fadein {
     from { opacity: 0; transform: translateY(40px);}

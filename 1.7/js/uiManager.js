@@ -36,7 +36,7 @@ export class UIManager {
     drawLoadingScreen(loadingProgress) {
         const ctx = this.ctx;
 
-        ctx.fillStyle = '#00d4ff';
+        ctx.fillStyle = '#6ee7b7'; // mint accent
         ctx.font = 'bold 24px "SF Pro Display", sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText('Loading...', this.canvas.width / 2, this.canvas.height / 2 - 30);
@@ -44,7 +44,7 @@ export class UIManager {
         // Loading bar
         ctx.fillStyle = '#1a1f2e';
         ctx.fillRect(this.canvas.width / 2 - 100, this.canvas.height / 2, 200, 4);
-        ctx.fillStyle = '#00d4ff';
+        ctx.fillStyle = '#6ee7b7'; // mint accent
         ctx.fillRect(this.canvas.width / 2 - 100, this.canvas.height / 2, loadingProgress * 2, 4);
 
         ctx.textAlign = 'start';
@@ -61,11 +61,11 @@ export class UIManager {
 
         ctx.save();
         // Draw score
-        ctx.shadowColor = '#00d4ff';
+        ctx.shadowColor = '#6ee7b7'; // mint glow
         ctx.shadowBlur = 8;
-        ctx.fillStyle = '#00d4ff';
+        ctx.fillStyle = '#6ee7b7';   // mint accent
         ctx.font = 'bold 38px "SF Pro Display", sans-serif';
-        ctx.textAlign = 'center'; // Center-align text
+        ctx.textAlign = 'center';
         const scoreText = this.gameState.getScore().toString();
         ctx.fillText(scoreText, this.canvas.width / 2, this.canvas.height * 0.1);
         ctx.shadowBlur = 0;
@@ -77,7 +77,7 @@ export class UIManager {
         ctx.fillText('PUMPY/USD Live', this.canvas.width * 0.02, this.canvas.height * 0.05);
 
         ctx.font = 'bold 14px "SF Pro Display", sans-serif';
-        ctx.fillStyle = '#26a69a';
+        ctx.fillStyle = '#34d399'; // mint-green positive
         const gainPercent = ((this.gameState.getPortfolioValue() - 50000) / 50000 * 100).toFixed(1);
         ctx.fillText(
             'Portfolio: $' + this.gameState.getPortfolioValue().toLocaleString() + ' (+' + gainPercent + '%)',
@@ -86,7 +86,7 @@ export class UIManager {
         );
 
         // Draw level and difficulty
-        ctx.fillStyle = '#ffd700';
+        ctx.fillStyle = '#6ee7b7'; // mint instead of gold
         ctx.fillText(
             'Level ' + this.difficulty.level + ' (' + this.difficulty.obstaclesInLevel + '/' + this.difficulty.obstaclesNeeded + ')',
             this.canvas.width * 0.02,
@@ -95,7 +95,7 @@ export class UIManager {
 
         // Draw speed and gap
         ctx.font = 'bold 12px "SF Pro Display", sans-serif';
-        ctx.fillStyle = '#ff9800';
+        ctx.fillStyle = '#b2b5be'; // neutral gray
         ctx.fillText(
             'Speed: ' + this.difficulty.speed.toFixed(1) + 'x | Gap: ' + Math.round(this.difficulty.pipeGap) + 'px',
             this.canvas.width * 0.02,
@@ -104,25 +104,22 @@ export class UIManager {
         
         // Display current pattern if available
         if (this.currentPattern) {
-            // Choose color based on pattern
             switch(this.currentPattern) {
                 case 'staircase':
-                    ctx.fillStyle = '#E57373'; // Red-ish
+                    ctx.fillStyle = '#34d399'; // mint (darker)
                     break;
                 case 'wave':
-                    ctx.fillStyle = '#64B5F6'; // Blue-ish
+                    ctx.fillStyle = '#6ee7b7'; // mint (base)
                     break;
                 case 'zigzag':
-                    ctx.fillStyle = '#FFD54F'; // Yellow-ish
+                    ctx.fillStyle = '#a7f3d0'; // mint (light)
                     break;
                 case 'narrow':
-                    ctx.fillStyle = '#9575CD'; // Purple-ish
+                    ctx.fillStyle = '#059669'; // emerald deep
                     break;
                 default:
-                    ctx.fillStyle = '#81C784'; // Green-ish for standard
+                    ctx.fillStyle = '#86efac'; // soft green
             }
-
-            // Format pattern name nicely
             const patternName = this.currentPattern.charAt(0).toUpperCase() + this.currentPattern.slice(1);
             ctx.fillText(
                 'Pattern: ' + patternName,
@@ -145,10 +142,10 @@ export class UIManager {
         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
         // Draw title
-        ctx.shadowColor = '#00d4ff';
+        ctx.shadowColor = '#6ee7b7';
         ctx.shadowBlur = 15;
         ctx.font = 'bold 48px "SF Pro Display", sans-serif';
-        ctx.fillStyle = '#00d4ff';
+        ctx.fillStyle = '#6ee7b7';
         ctx.textAlign = 'center';
         ctx.fillText('PUMPY PILLS', this.canvas.width / 2, this.canvas.height / 2 - 100);
         ctx.shadowBlur = 0;
@@ -165,7 +162,7 @@ export class UIManager {
 
         // Draw start instructions
         ctx.font = 'bold 14px "SF Pro Display", sans-serif';
-        ctx.fillStyle = '#00d4ff';
+        ctx.fillStyle = '#6ee7b7';
         ctx.fillText('SPACEBAR or CLICK to start trading', this.canvas.width / 2, this.canvas.height / 2 + 50);
 
         // Draw character selection
@@ -184,15 +181,15 @@ export class UIManager {
         this.cacheTextMeasurements();
 
         ctx.save();
-        // Draw overlay
+        // Overlay
         ctx.fillStyle = 'rgba(13, 20, 33, 0.95)';
         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-        // Draw game over text
-        ctx.shadowColor = '#ef5350';
+        // Game over text (mint accent)
+        ctx.shadowColor = '#34d399';
         ctx.shadowBlur = 10;
         ctx.font = 'bold 36px "SF Pro Display", sans-serif';
-        ctx.fillStyle = '#ef5350';
+        ctx.fillStyle = '#34d399';
         ctx.textAlign = 'center';
         ctx.fillText('POSITION LIQUIDATED', this.canvas.width / 2, this.canvas.height / 2 - 80);
         ctx.shadowBlur = 0;
@@ -205,11 +202,11 @@ export class UIManager {
         // Draw level reached
         ctx.fillText('Reached Level: ' + this.difficulty.level, this.canvas.width / 2, this.canvas.height / 2);
 
-        // Draw portfolio value
-        ctx.fillStyle = '#00d4ff';
+        // Portfolio value
+        ctx.fillStyle = '#6ee7b7';
         ctx.fillText('Portfolio: $' + this.gameState.getPortfolioValue().toLocaleString(), this.canvas.width / 2, this.canvas.height / 2 + 30);
 
-        // Draw restart instructions
+        // Restart instructions
         ctx.font = 'bold 14px "SF Pro Display", sans-serif';
         ctx.fillText('SPACEBAR or CLICK to restart trading', this.canvas.width / 2, this.canvas.height / 2 + 70);
 
@@ -258,6 +255,9 @@ export class UIManager {
 
             // Restore context state instead of manual resets
             ctx.restore();
+        }
+    }
+}
         }
     }
 }

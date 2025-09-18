@@ -197,11 +197,12 @@
         } else if (gameState.isPlaying()) {
             try {
                 bird.jump(PHYSICS.JUMP);
+                // Add jump visual feedback (mint)
                 for (let i = 0; i < 3; i++) {
                     particles.add(
                         bird.x - PHYSICS.BIRD_RADIUS/2 + Math.random() * PHYSICS.BIRD_RADIUS,
                         bird.y + PHYSICS.BIRD_RADIUS/2,
-                        '#00d4ff'
+                        '#6ee7b7' // mint
                     );
                 }
             } catch (error) {
@@ -261,15 +262,15 @@
                     pipe.scored = true;
                     gameState.incrementScore(1);
                     gameState.updatePortfolio(Math.floor(750 * (1 + difficulty.level * 0.08)));
-                    particles.add(bird.x, bird.y, '#26a69a');
+                    particles.add(bird.x, bird.y, '#34d399'); // mint scoring
                     if (difficulty.levelUp()) {
                         try {
                             levelUpSound.currentTime = 0;
                             levelUpSound.play();
                         } catch (e) {}
                         gameState.updatePortfolio(difficulty.level * 1500);
-                        particles.add(bird.x, bird.y, '#ffd700');
-                        particles.add(bird.x, bird.y, '#00d4ff');
+                        particles.add(bird.x, bird.y, '#a7f3d0'); // light mint
+                        particles.add(bird.x, bird.y, '#34d399'); // mint
                         obstacles.updateDifficulty(difficulty.pipeGap, difficulty.pipeSpacing);
                     }
                 }
@@ -281,7 +282,7 @@
 
     function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#0d1421';
+        ctx.fillStyle = '#15161b'; // match page background
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         drawVolumeBars(ctx, canvas, 48, 40);
