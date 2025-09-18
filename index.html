@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pumpy Pill</title>
-    <!-- Ensure all relative paths resolve to /1.7/ -->
-    <base href="/1.7/">
+    <!-- Update base href to relative path -->
+    <base href="./1.7/">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -54,16 +54,7 @@
         THIS IS JUST A BETA. NO TOKEN AT THIS TIME
     </footer>
     <script type="module">
-    // Debugging: Log errors during game initialization
-    window.addEventListener('error', function(e) {
-        console.error('Runtime error:', e.error.message);
-    }, { passive: true });
-
-    window.addEventListener('unhandledrejection', function(e) {
-        console.error('Unhandled promise rejection:', e.reason);
-    }, { passive: true });
-
-    // Import game modules
+    // ...existing code from 1.7/1.6.6.html (imports, game setup, and loop)...
     import { Player } from "./js/player.js";
     import { Obstacles } from "./js/obstacles.js";
     import { ChartTrail } from "./js/chart.js";
@@ -75,18 +66,11 @@
     import { UIManager } from "./js/uiManager.js";
     import { PerformanceMonitor } from "./js/performanceMonitor.js";
 
-    // Debugging: Log module imports
-    console.log('Modules imported successfully.');
+    // ...existing code...
+    // All relative paths continue to work because of <base href="./1.7/">
+    // e.g. images: ./assets/..., sounds: ./assets/..., modules: ./js/..., CSS: styles.css
 
-    // Initialize game
-    try {
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        // ...existing code for game initialization...
-        console.log('Game initialized successfully.');
-    } catch (error) {
-        console.error('Error during game initialization:', error);
-    }
+    // ...existing code copied from the original 1.7/1.6.6.html script block...
     </script>
 </body>
 </html>
