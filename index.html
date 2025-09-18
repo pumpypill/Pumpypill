@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pumpy Pill</title>
     <link rel="stylesheet" href="/1.7/styles.css">
+    <!-- Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Cupsey favicon -->
     <link rel="icon" type="image/png" href="/1.7/assets/characters/cupsey.png">
     <link rel="shortcut icon" type="image/png" href="/1.7/assets/characters/cupsey.png">
@@ -477,7 +481,7 @@
                 frameCount++;
                 ctx.save();
                 ctx.globalAlpha = notification.opacity;
-                ctx.font = 'bold 24px "SF Pro Display", sans-serif';
+                ctx.font = 'bold 24px "Inter", sans-serif';
                 ctx.fillStyle = notification.color;
                 ctx.textAlign = 'center';
                 ctx.fillText(notification.text, notification.x, notification.y);

@@ -10,19 +10,26 @@ export class UIManager {
 
         // Initialize cached text measurements as null
         this.cachedTextMeasurements = null;
+
+        // New: preload logo image to replace title text
+        this.logoImage = new Image();
+        this.logoLoaded = false;
+        this.logoImage.onload = () => { this.logoLoaded = true; };
+        this.logoImage.onerror = () => { console.warn('UIManager: logo.png failed to load, using text fallback.'); };
+        this.logoImage.src = '/1.7/assets/site/logo.png';
     }
 
     cacheTextMeasurements() {
         if (!this.cachedTextMeasurements) {
             const ctx = this.ctx;
             // Cache measurements with appropriate fonts for each text element
-            ctx.font = 'bold 48px "SF Pro Display", sans-serif';
+            ctx.font = 'bold 48px "Inter", sans-serif';
             const titleWidth = ctx.measureText('PUMPY PILLS').width;
             
-            ctx.font = 'bold 14px "SF Pro Display", sans-serif';
+            ctx.font = 'bold 14px "Inter", sans-serif';
             const startTextWidth = ctx.measureText('SPACEBAR or CLICK to start trading').width;
             
-            ctx.font = 'bold 36px "SF Pro Display", sans-serif';
+            ctx.font = 'bold 36px "Inter", sans-serif';
             const gameOverTextWidth = ctx.measureText('POSITION LIQUIDATED').width;
             
             this.cachedTextMeasurements = {
@@ -37,7 +44,7 @@ export class UIManager {
         const ctx = this.ctx;
 
         ctx.fillStyle = '#6ee7b7'; // mint accent
-        ctx.font = 'bold 24px "SF Pro Display", sans-serif';
+        ctx.font = 'bold 24px "Inter", sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText('Loading...', this.canvas.width / 2, this.canvas.height / 2 - 30);
 
@@ -64,19 +71,19 @@ export class UIManager {
         ctx.shadowColor = '#6ee7b7'; // mint glow
         ctx.shadowBlur = 8;
         ctx.fillStyle = '#6ee7b7';   // mint accent
-        ctx.font = 'bold 38px "SF Pro Display", sans-serif';
+        ctx.font = 'bold 38px "Inter", sans-serif';
         ctx.textAlign = 'center';
         const scoreText = this.gameState.getScore().toString();
         ctx.fillText(scoreText, this.canvas.width / 2, this.canvas.height * 0.1);
         ctx.shadowBlur = 0;
 
         // Draw portfolio value
-        ctx.font = 'bold 16px "SF Pro Display", sans-serif';
+        ctx.font = 'bold 16px "Inter", sans-serif';
         ctx.fillStyle = '#ffffff';
         ctx.textAlign = 'left'; // Align text to the left
         ctx.fillText('PUMPY/USD Live', this.canvas.width * 0.02, this.canvas.height * 0.05);
 
-        ctx.font = 'bold 14px "SF Pro Display", sans-serif';
+        ctx.font = 'bold 14px "Inter", sans-serif';
         ctx.fillStyle = '#34d399'; // mint-green positive
         const gainPercent = ((this.gameState.getPortfolioValue() - 50000) / 50000 * 100).toFixed(1);
         ctx.fillText(
@@ -94,7 +101,7 @@ export class UIManager {
         );
 
         // Draw speed and gap
-        ctx.font = 'bold 12px "SF Pro Display", sans-serif';
+        ctx.font = 'bold 12px "Inter", sans-serif';
         ctx.fillStyle = '#b2b5be'; // neutral gray
         ctx.fillText(
             'Speed: ' + this.difficulty.speed.toFixed(1) + 'x | Gap: ' + Math.round(this.difficulty.pipeGap) + 'px',
@@ -141,31 +148,47 @@ export class UIManager {
         ctx.fillStyle = 'rgba(13, 20, 33, 0.95)';
         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-        // Draw title
-        ctx.shadowColor = '#6ee7b7';
-        ctx.shadowBlur = 15;
-        ctx.font = 'bold 48px "SF Pro Display", sans-serif';
-        ctx.fillStyle = '#6ee7b7';
-        ctx.textAlign = 'center';
-        ctx.fillText('PUMPY PILLS', this.canvas.width / 2, this.canvas.height / 2 - 100);
-        ctx.shadowBlur = 0;
+        // Replaced title text with logo image (fallback to text if not ready)
+        if (this.logoLoaded) {
+            const targetWidth = Math.min(380, this.canvas.width * 0.75);
+            const aspect = this.logoImage.width / this.logoImage.height || 4;
+            const targetHeight = targetWidth / aspect;
+            const drawX = (this.canvas.width - targetWidth) / 2;
+            const drawY = this.canvas.height / 2 - 140;
+            ctx.shadowColor = '#6ee7b7';
+            ctx.shadowBlur = 18;
+            ctx.drawImage(this.logoImage, drawX, drawY, targetWidth, targetHeight);
+            ctx.shadowBlur = 0;
+        } else {
+            // Fallback original text
+            ctx.shadowColor = '#6ee7b7';
+            ctx.shadowBlur = 15;
+            ctx.font = 'bold 48px "Inter", sans-serif';
+            ctx.fillStyle = '#6ee7b7';
+            ctx.textAlign = 'center';
+            ctx.fillText('PUMPY PILLS', this.canvas.width / 2, this.canvas.height / 2 - 100);
+            ctx.shadowBlur = 0;
+        }
 
-        // Draw subtitle
-        ctx.font = '18px "SF Pro Display", sans-serif';
+        // Shift subsequent elements slightly if logo is taller
+        const baseOffset = this.logoLoaded ? -40 : 0;
+
+        // Subtitle
+        ctx.font = '18px "Inter", sans-serif';
         ctx.fillStyle = '#b2b5be';
-        ctx.fillText('Navigate the volatile crypto markets', this.canvas.width / 2, this.canvas.height / 2 - 60);
+        ctx.fillText('Navigate the volatile crypto markets', this.canvas.width / 2, this.canvas.height / 2 - 60 + baseOffset);
 
-        // Draw character selection prompt
-        ctx.font = '16px "SF Pro Display", sans-serif';
+        // Character selection prompt
+        ctx.font = '16px "Inter", sans-serif';
         ctx.fillStyle = '#b2b5be';
-        ctx.fillText('Select your character:', this.canvas.width / 2, this.canvas.height / 2 - 30);
+        ctx.fillText('Select your character:', this.canvas.width / 2, this.canvas.height / 2 - 30 + baseOffset);
 
-        // Draw start instructions
-        ctx.font = 'bold 14px "SF Pro Display", sans-serif';
+        // Start instructions
+        ctx.font = 'bold 14px "Inter", sans-serif';
         ctx.fillStyle = '#6ee7b7';
-        ctx.fillText('SPACEBAR or CLICK to start trading', this.canvas.width / 2, this.canvas.height / 2 + 50);
+        ctx.fillText('SPACEBAR or CLICK to start trading', this.canvas.width / 2, this.canvas.height / 2 + 50 + baseOffset);
 
-        // Draw character selection
+        // Character selection
         try {
             characterManager.drawSelection(ctx);
         } catch (error) {
@@ -188,14 +211,14 @@ export class UIManager {
         // Game over text (mint accent)
         ctx.shadowColor = '#34d399';
         ctx.shadowBlur = 10;
-        ctx.font = 'bold 36px "SF Pro Display", sans-serif';
+        ctx.font = 'bold 36px "Inter", sans-serif';
         ctx.fillStyle = '#34d399';
         ctx.textAlign = 'center';
         ctx.fillText('POSITION LIQUIDATED', this.canvas.width / 2, this.canvas.height / 2 - 80);
         ctx.shadowBlur = 0;
 
         // Draw final score
-        ctx.font = '20px "SF Pro Display", sans-serif';
+        ctx.font = '20px "Inter", sans-serif';
         ctx.fillStyle = '#ffffff';
         ctx.fillText('Final Score: ' + this.gameState.getScore(), this.canvas.width / 2, this.canvas.height / 2 - 30);
 
@@ -207,7 +230,7 @@ export class UIManager {
         ctx.fillText('Portfolio: $' + this.gameState.getPortfolioValue().toLocaleString(), this.canvas.width / 2, this.canvas.height / 2 + 30);
 
         // Restart instructions
-        ctx.font = 'bold 14px "SF Pro Display", sans-serif';
+        ctx.font = 'bold 14px "Inter", sans-serif';
         ctx.fillText('SPACEBAR or CLICK to restart trading', this.canvas.width / 2, this.canvas.height / 2 + 70);
 
         // Draw character selection

@@ -73,7 +73,7 @@ export class CharacterManager {
 
         // Draw selected character feedback below character manager
         if (this.selectedCharacter && this.gameState) {
-            ctx.font = 'bold 16px "SF Pro Display", sans-serif';
+            ctx.font = 'bold 16px "Inter", sans-serif';
             ctx.fillStyle = '#26a69a';
             ctx.textAlign = 'center';
             ctx.fillText(`Selected: ${this.selectedCharacter.name}`, this.canvas.width / 2, centerY + 100); // Positioned below character manager

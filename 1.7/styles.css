@@ -31,7 +31,7 @@ body, h1, h2, h3, h4, p, figure, blockquote, dl, dd {
 body { 
     background: #15161b; /* Updated background color */
     color: var(--color-text-primary); 
-    font-family: "SF Pro Display", "Segoe UI", system-ui, sans-serif; 
+    font-family: "Inter", "Segoe UI", system-ui, sans-serif; 
     text-align: center; 
     overflow-x: hidden;
     user-select: text;
