@@ -159,6 +159,10 @@ main {
     justify-content: center;
     width: 100%;
     position: relative;
+    background: var(--color-background-alt); /* Add a background to make the canvas area visible */
+    border: 2px solid var(--color-border); /* Ensure the canvas container has a visible border */
+    padding: 10px; /* Add padding around the canvas */
+    box-shadow: var(--shadow-md); /* Add a shadow for better visibility */
 }
 .info-container {
     width: 100%;

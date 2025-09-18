@@ -17,7 +17,9 @@
         <div class="content-container">
             <div class="game-container">
                 <div class="canvas-container">
-                    <canvas id="gameCanvas" width="800" height="600"></canvas>
+                    <canvas id="gameCanvas" width="800" height="600">
+                        Your browser does not support the canvas element.
+                    </canvas>
                 </div>
                 <div class="instructions">
                     <p>Time your jumps carefully to navigate the obstacles!</p>
@@ -54,7 +56,16 @@
         THIS IS JUST A BETA. NO TOKEN AT THIS TIME
     </footer>
     <script type="module">
-    // ...existing code from 1.7/1.6.6.html (imports, game setup, and loop)...
+    // Ensure the canvas is properly initialized
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    if (!ctx) {
+        console.error('Failed to get 2D context. Your browser may not support the canvas element.');
+    } else {
+        console.log('Canvas initialized successfully.');
+    }
+
     import { Player } from "./js/player.js";
     import { Obstacles } from "./js/obstacles.js";
     import { ChartTrail } from "./js/chart.js";
@@ -66,11 +77,8 @@
     import { UIManager } from "./js/uiManager.js";
     import { PerformanceMonitor } from "./js/performanceMonitor.js";
 
-    // ...existing code...
-    // All relative paths continue to work because of <base href="/1.7/">
-    // e.g. images: ./assets/..., sounds: ./assets/..., modules: ./js/..., CSS: styles.css
-
-    // ...existing code copied from the original 1.7/1.6.6.html script block...
+    // ...existing game initialization code from 1.7/1.6.6.html...
+    // Ensure the game loop and rendering logic are properly linked to the canvas
     </script>
 </body>
 </html>
