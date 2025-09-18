@@ -139,28 +139,32 @@ export class UIManager {
 
     drawStartScreen(characterManager) {
         const ctx = this.ctx;
-
-        // Cache text measurements if not already cached
         this.cacheTextMeasurements();
-
         ctx.save();
         // Draw overlay
         ctx.fillStyle = 'rgba(13, 20, 33, 0.95)';
         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-        // Replaced title text with logo image (fallback to text if not ready)
+        let subtitleY, charPromptY, startInstrY;
+
         if (this.logoLoaded) {
-            const targetWidth = Math.min(380, this.canvas.width * 0.75);
-            const aspect = this.logoImage.width / this.logoImage.height || 4;
-            const targetHeight = targetWidth / aspect;
-            const drawX = (this.canvas.width - targetWidth) / 2;
-            const drawY = this.canvas.height / 2 - 140;
+            // New sizing & placement: narrower and above center
+            const maxWidth = Math.min(340, this.canvas.width * 0.70);
+            const aspect = (this.logoImage.width / this.logoImage.height) || 4;
+            const height = maxWidth / aspect;
+            const x = (this.canvas.width - maxWidth) / 2;
+            const y = this.canvas.height * 0.5 - height - 30; // lift logo above middle
             ctx.shadowColor = '#6ee7b7';
             ctx.shadowBlur = 18;
-            ctx.drawImage(this.logoImage, drawX, drawY, targetWidth, targetHeight);
+            ctx.drawImage(this.logoImage, x, y, maxWidth, height);
             ctx.shadowBlur = 0;
+
+            const logoBottom = y + height;
+            subtitleY   = logoBottom + 28;
+            charPromptY = subtitleY + 26;
+            startInstrY = charPromptY + 60;
         } else {
-            // Fallback original text
+            // Fallback text title
             ctx.shadowColor = '#6ee7b7';
             ctx.shadowBlur = 15;
             ctx.font = 'bold 48px "Inter", sans-serif';
@@ -168,31 +172,33 @@ export class UIManager {
             ctx.textAlign = 'center';
             ctx.fillText('PUMPY PILLS', this.canvas.width / 2, this.canvas.height / 2 - 100);
             ctx.shadowBlur = 0;
-        }
 
-        // Shift subsequent elements slightly if logo is taller
-        const baseOffset = this.logoLoaded ? -40 : 0;
+            subtitleY   = this.canvas.height / 2 - 60;
+            charPromptY = this.canvas.height / 2 - 30;
+            startInstrY = this.canvas.height / 2 + 50;
+        }
 
         // Subtitle
         ctx.font = '18px "Inter", sans-serif';
         ctx.fillStyle = '#b2b5be';
-        ctx.fillText('Navigate the volatile crypto markets', this.canvas.width / 2, this.canvas.height / 2 - 60 + baseOffset);
+        ctx.textAlign = 'center';
+        ctx.fillText('Navigate the volatile crypto markets', this.canvas.width / 2, subtitleY);
 
         // Character selection prompt
         ctx.font = '16px "Inter", sans-serif';
         ctx.fillStyle = '#b2b5be';
-        ctx.fillText('Select your character:', this.canvas.width / 2, this.canvas.height / 2 - 30 + baseOffset);
+        ctx.fillText('Select your character:', this.canvas.width / 2, charPromptY);
 
         // Start instructions
         ctx.font = 'bold 14px "Inter", sans-serif';
         ctx.fillStyle = '#6ee7b7';
-        ctx.fillText('SPACEBAR or CLICK to start trading', this.canvas.width / 2, this.canvas.height / 2 + 50 + baseOffset);
+        ctx.fillText('SPACEBAR or CLICK to start trading', this.canvas.width / 2, startInstrY);
 
-        // Character selection
+        // Character selection (uses its own positioning)
         try {
             characterManager.drawSelection(ctx);
-        } catch (error) {
-            console.error('Error drawing character selection:', error);
+        } catch (e) {
+            console.error('Error drawing character selection:', e);
         }
         ctx.restore();
     }
