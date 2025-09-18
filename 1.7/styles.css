@@ -26,7 +26,7 @@ body, h1, h2, h3, h4, p, figure, blockquote, dl, dd {
 }
 
 body { 
-    background: var(--color-background); 
+    background: #0a0a10; /* Updated background color */
     color: var(--color-text-primary); 
     font-family: "SF Pro Display", "Segoe UI", system-ui, sans-serif; 
     text-align: center; 
@@ -96,7 +96,7 @@ canvas {
 }
 header {
     width: 100%;
-    background: var(--color-background-alt);
+    background: #8a8a8f; /* Updated header color */
     color: var(--color-accent);
     font-size: 2rem;
     font-weight: bold;
