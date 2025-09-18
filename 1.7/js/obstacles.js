@@ -65,8 +65,8 @@ export class Obstacles {
         currentGap = Math.max(this.OBSTACLES.MIN_GAP, currentGap - rugAdjustment);
 
         // Clamp center after final gap to avoid overflow
-        const minGapPos = Math.max(currentGap / 2, 50);
-        const maxGapPos = this.canvasHeight - Math.max(currentGap / 2, 50);
+        minGapPos = Math.max(currentGap / 2, 50);
+        maxGapPos = this.canvasHeight - Math.max(currentGap / 2, 50);
         gapCenter = Math.max(minGapPos, Math.min(maxGapPos, gapCenter));
 
         const obstacle = {
@@ -517,7 +517,7 @@ export class Obstacles {
                 }
             }
         }
-    }
+    } // <-- Closing brace added here
     
     // Persian medallion style
     drawPersianRugPattern(ctx, x, y, width, height, hue) {
@@ -602,15 +602,6 @@ export class Obstacles {
                     ctx.beginPath();
                     ctx.moveTo(x + j + patternSize/2, y + i);
                     ctx.lineTo(x + j + patternSize, y + i + patternSize/2);
-                    ctx.lineTo(x + j + patternSize/2, y + i + patternSize);
-                    ctx.lineTo(x + j, y + i + patternSize/2);
-                    ctx.closePath();
-                    ctx.fill();
-                }
-            }
-        }
-    }
-}
                     ctx.lineTo(x + j + patternSize/2, y + i + patternSize);
                     ctx.lineTo(x + j, y + i + patternSize/2);
                     ctx.closePath();
