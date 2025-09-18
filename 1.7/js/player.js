@@ -34,6 +34,11 @@ export class Player {
         this.vy = Math.min(this.vy, maxFall * 1.05); // Slightly slower max fall
         this.y += this.vy;
 
+        // Reset jump chain when clearly falling to re-enable second-jump boost later
+        if (this.vy > 0.5) {
+            this.jumpCount = 0;
+        }
+
         // Calculate target rotation based on vertical velocity
         this.targetRotation = Math.min(Math.PI / 4, Math.max(-Math.PI / 6, this.vy * 0.2));
 
@@ -60,10 +65,7 @@ export class Player {
         // Temporarily increase rotation responsiveness
         this.rotationLerpFactor = this.jumpRotationBoost;
 
-        // Reset jump count only if falling significantly
-        if (this.vy > 2) {
-            this.jumpCount = 0;
-        }
+        // Removed ineffective falling check (vy is negative right after jump)
     }
 
     draw(ctx, radius) {
