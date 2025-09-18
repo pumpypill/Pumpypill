@@ -297,106 +297,75 @@ footer::before {
     to   { opacity: 1; transform: none;}
 }
 
-/* Our Mission Container (restored) */
-.mission-container {
-    width: 100%;
-    max-width: 800px;
-    margin: 32px auto 0;
-    background: linear-gradient(120deg, #181c24 80%, #23243a 100%);
-    border-radius: 16px;
-    padding: 28px 32px 28px 56px;
-    box-shadow: 0 2px 16px 0 rgba(255, 215, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.18);
-    position: relative;
-    border-left: 6px solid var(--color-accent);
-    animation: roadmap-fadein 1.2s cubic-bezier(.4,2,.6,1);
-    transition: box-shadow 0.3s, border-color 0.3s;
-}
-.mission-container h2 { color: var(--color-accent); }
-
-/* About Us Container (restored) */
-.about-container {
-    width: 100%;
-    max-width: 800px;
-    margin: 32px auto 0;
-    background: linear-gradient(120deg, #181c24 80%, #23243a 100%);
-    border-radius: 16px;
-    padding: 28px 32px 28px 56px;
-    box-shadow: 0 2px 16px 0 rgba(255, 215, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.18);
-    position: relative;
-    border-left: 6px solid var(--color-accent);
-    animation: roadmap-fadein 1.2s cubic-bezier(.4,2,.6,1);
-    transition: box-shadow 0.3s, border-color 0.3s;
-}
-.about-container h2 { color: var(--color-accent); }
-
-/* Contact Us Container (restored) */
-.contact-container {
-    width: 100%;
-    max-width: 800px;
-    margin: 32px auto 0;
-    background: linear-gradient(120deg, #181c24 80%, #23243a 100%);
-    border-radius: 16px;
-    padding: 28px 32px 28px 56px;
-    box-shadow: 0 2px 16px 0 rgba(255, 215, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.18);
-    position: relative;
-    border-left: 6px solid var(--color-accent);
-    animation: roadmap-fadein 1.2s cubic-bezier(.4,2,.6,1);
-    transition: box-shadow 0.3s, border-color 0.3s;
-}
-.contact-container h2 { color: var(--color-accent); }
-
-/* Bug Reports and Feature Requests Container (restored) */
-.bugs-container {
-    width: 100%;
-    max-width: 800px;
-    margin: 32px auto 0;
-    background: linear-gradient(120deg, #181c24 80%, #23243a 100%);
-    border-radius: 16px;
-    padding: 28px 32px 28px 56px;
-    box-shadow: 0 2px 16px 0 rgba(255, 215, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.18);
-    position: relative;
-    border-left: 6px solid var(--color-accent);
-    animation: roadmap-fadein 1.2s cubic-bezier(.4,2,.6,1);
-    transition: box-shadow 0.3s, border-color 0.3s;
-}
-.bugs-container h2 { color: var(--color-accent); }
-
-/* New Roadmap Section Styles (scoped to .roadmap-container to avoid conflicts) */
+/* Enhance roadmap grid with counter for phases */
 .roadmap-container .roadmap-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 24px;
+    counter-reset: phase;
 }
+
+/* Make roadmap items number-aware and decorative */
 .roadmap-container .roadmap-item {
     background: linear-gradient(120deg, #181c24 80%, #23243a 100%);
     border-radius: var(--border-radius);
     padding: 20px;
     box-shadow: var(--shadow-sm);
     transition: transform var(--transition-standard), box-shadow var(--transition-standard);
+    position: relative;
+    overflow: hidden;
+    counter-increment: phase;
+    padding-top: 28px; /* room for the badge */
 }
-.roadmap-container .roadmap-item:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-lg);
-}
-.roadmap-container .roadmap-icon {
-    text-align: center;
-    margin-bottom: 16px;
-}
-.roadmap-container .roadmap-icon img {
+
+/* Circular glowing phase badge (top-left) */
+.roadmap-container .roadmap-item::before {
+    content: counter(phase);
+    position: absolute;
+    top: -16px;
+    left: -16px;
     width: 64px;
     height: 64px;
     border-radius: 50%;
-    box-shadow: 0 0 8px rgba(110, 231, 183, 0.5);
+    background: radial-gradient(60% 60% at 40% 40%, #a7f3d0 0%, #34d399 70%, rgba(52,211,153,0.85) 100%);
+    border: 2px solid rgba(110, 231, 183, 0.55);
+    box-shadow: 0 8px 24px rgba(52, 211, 153, 0.35), inset 0 2px 6px rgba(0,0,0,0.35);
+    color: #0b101a;
+    font-weight: 900;
+    font-size: 26px;
+    display: grid;
+    place-items: center;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.35);
+    pointer-events: none;
 }
+
+/* Large translucent numeral watermark (bottom-right) */
+.roadmap-container .roadmap-item::after {
+    content: counter(phase);
+    position: absolute;
+    right: -6px;
+    bottom: -22px;
+    font-size: 92px;
+    font-weight: 900;
+    line-height: 1;
+    color: rgba(110, 231, 183, 0.08);
+    letter-spacing: -2px;
+    pointer-events: none;
+    user-select: none;
+}
+
+/* Tighten content spacing knowing the badge exists */
 .roadmap-container .roadmap-content h3 {
     color: var(--color-accent);
     margin-bottom: 8px;
     font-size: 1.4rem;
+    margin-top: 2px;
 }
-.roadmap-container .roadmap-content p {
-    color: var(--color-text-secondary);
-    font-size: 1rem;
-    line-height: 1.5;
+
+/* If any legacy icon markup remains, hide it */
+.roadmap-container .roadmap-icon,
+.roadmap-container .roadmap-icon img {
+    display: none !important;
 }
 
 /* Optional container heading for an alternative roadmap wrapper (kept, non-conflicting) */
