@@ -28,7 +28,7 @@ export class UIManager {
             this.cachedTextMeasurements = {
                 title: { width: titleWidth },
                 startText: { width: startTextWidth },
-                gameOverText: { width: gameOverTextWidth },
+                gameOverText: { width: gameOverTextWidth } // removed trailing comma
             };
         }
     }
