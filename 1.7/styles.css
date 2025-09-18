@@ -297,6 +297,78 @@ footer::before {
     to   { opacity: 1; transform: none;}
 }
 
+/* Our Mission Container */
+.mission-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 32px auto 0;
+    background: linear-gradient(120deg, #181c24 80%, #23243a 100%);
+    border-radius: 16px;
+    padding: 28px 32px 28px 56px;
+    box-shadow: 0 2px 16px 0 rgba(255, 215, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.18);
+    position: relative;
+    border-left: 6px solid var(--color-accent);
+    animation: roadmap-fadein 1.2s cubic-bezier(.4,2,.6,1);
+    transition: box-shadow 0.3s, border-color 0.3s;
+}
+.mission-container h2 {
+    color: #a7f3d0; /* light mint title */
+}
+
+/* About Us Container */
+.about-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 32px auto 0;
+    background: linear-gradient(120deg, #23243a 80%, #181c24 100%);
+    border-radius: 16px;
+    padding: 28px 32px 28px 56px;
+    box-shadow: 0 2px 16px 0 rgba(255, 215, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.18);
+    position: relative;
+    border-left: 6px solid #4CAF50; /* bright green */
+    animation: roadmap-fadein 1.2s cubic-bezier(.4,2,.6,1);
+    transition: box-shadow 0.3s, border-color 0.3s;
+}
+.about-container h2 {
+    color: #4CAF50; /* bright green title */
+}
+
+/* Contact Us Container */
+.contact-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 32px auto 0;
+    background: linear-gradient(120deg, #181c24 80%, #23243a 100%);
+    border-radius: 16px;
+    padding: 28px 32px 28px 56px;
+    box-shadow: 0 2px 16px 0 rgba(255, 215, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.18);
+    position: relative;
+    border-left: 6px solid #00BCD4; /* cyan */
+    animation: roadmap-fadein 1.2s cubic-bezier(.4,2,.6,1);
+    transition: box-shadow 0.3s, border-color 0.3s;
+}
+.contact-container h2 {
+    color: #00BCD4; /* cyan title */
+}
+
+/* Bug Reports and Feature Requests Container */
+.bugs-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 32px auto 0;
+    background: linear-gradient(120deg, #23243a 80%, #181c24 100%);
+    border-radius: 16px;
+    padding: 28px 32px 28px 56px;
+    box-shadow: 0 2px 16px 0 rgba(255, 215, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.18);
+    position: relative;
+    border-left: 6px solid #FF9800; /* orange */
+    animation: roadmap-fadein 1.2s cubic-bezier(.4,2,.6,1);
+    transition: box-shadow 0.3s, border-color 0.3s;
+}
+.bugs-container h2 {
+    color: #FF9800; /* orange title */
+}
+
 /* Ensure the very last content block has breathing room above the footer */
 .roadmap-container:last-of-type {
     margin-bottom: 28px;
