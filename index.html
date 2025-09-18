@@ -476,6 +476,17 @@
 
     updateUIWithPattern(obstacles.currentPattern);
 
+    // Reserve space for fixed footer (prevents last section from being cut off)
+    const footerEl = document.querySelector('footer');
+    function setFooterInset() {
+        if (!footerEl) return;
+        const h = footerEl.offsetHeight || 0;
+        document.documentElement.style.setProperty('--footer-height', `${h}px`);
+    }
+    // Run now and on resize to keep it accurate
+    setFooterInset();
+    window.addEventListener('resize', setFooterInset, { passive: true });
+
     gameLoop();
     </script>
 </body>

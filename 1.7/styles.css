@@ -12,6 +12,9 @@
     --shadow-lg: 0 6px 20px rgba(0, 212, 255, 0.4), 0 4px 12px rgba(0, 0, 0, 0.6);
     --border-radius: 8px;
     --transition-standard: 0.3s ease;
+
+    /* Footer height is measured in JS and injected here; default fallback keeps content safe */
+    --footer-height: 64px;
 }
 
 /* Modern CSS Reset */
@@ -36,8 +39,30 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
+
+    /* Use small/dynamic viewport units (with fallback) for mobile browser UI */
     min-height: 100vh;
+    min-height: 100dvh;
+
     line-height: 1.5;
+
+    /* Critical: reserve space for fixed footer so last section isn't overlapped */
+    padding-bottom: calc(var(--footer-height) + 16px);
+}
+
+/* Tweak top spacing */
+main {
+    width: 100%;
+    display: block;
+    margin-bottom: 24px;
+}
+
+/* Provide layout rules for the wrapper used in markup */
+.content-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto 28px auto;
+    padding: 0 12px;
 }
 
 /* Canvas Styles */
@@ -97,6 +122,11 @@ footer {
     z-index: 10;
     box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
     background: linear-gradient(90deg, #131a26 80%, #23243a 100%);
+
+    /* Optional: stabilize height across platforms while still allowing JS to measure accurately */
+    /* min-height aligns with default --footer-height fallback */
+    min-height: 48px;
+
     border-top: 2px solid rgba(110, 231, 183, 0.27);
 }
 footer::before {
@@ -265,6 +295,11 @@ footer::before {
     to   { opacity: 1; transform: none;}
 }
 
+/* Ensure the very last content block has breathing room above the footer */
+.roadmap-container:last-of-type {
+    margin-bottom: 28px;
+}
+
 /* Responsive Adjustments */
 @media (max-width: 840px) {
     canvas {
@@ -280,6 +315,10 @@ footer::before {
     }
     .roadmap-container {
         padding-left: 38px;
+    }
+    .content-container {
+        padding: 0 10px;
+        margin-bottom: 20px;
     }
 }
 
