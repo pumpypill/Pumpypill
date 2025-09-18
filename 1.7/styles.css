@@ -311,6 +311,11 @@ footer::before {
     to   { opacity: 1; transform: none;}
 }
 
+/* Add vertical spacing between "Roadmap" heading and phase grid */
+.roadmap-container > h2 {
+    margin-bottom: 22px;
+}
+
 /* Enhance roadmap grid with counter for phases */
 .roadmap-container .roadmap-grid {
     display: grid;
