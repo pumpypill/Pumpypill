@@ -297,7 +297,7 @@ footer::before {
     to   { opacity: 1; transform: none;}
 }
 
-/* New Roadmap Section Styles */
+/* Scoped styles for the new roadmap section */
 .roadmap-container-new {
     width: 100%;
     max-width: 900px;
@@ -359,8 +359,44 @@ footer::before {
     line-height: 1.5;
 }
 
+/* Restore styles for other containers */
+.info-container,
+.roadmap-container,
+.mission-container,
+.about-container,
+.contact-container,
+.bugs-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 32px auto 0;
+    background: linear-gradient(120deg, #181c24 80%, #23243a 100%);
+    border-radius: 16px;
+    padding: 28px 32px 28px 56px;
+    box-shadow: 0 2px 16px 0 rgba(255, 215, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.18);
+    position: relative;
+    border-left: 6px solid var(--color-accent);
+    animation: roadmap-fadein 1.2s cubic-bezier(.4,2,.6,1);
+    transition: box-shadow 0.3s, border-color 0.3s;
+}
+
+.info-container h2,
+.roadmap-container h2,
+.mission-container h2,
+.about-container h2,
+.contact-container h2,
+.bugs-container h2 {
+    color: var(--color-accent);
+    margin-top: 0;
+    letter-spacing: 1px;
+}
+
 /* Ensure the very last content block has breathing room above the footer */
-.roadmap-container:last-of-type {
+.roadmap-container:last-of-type,
+.info-container:last-of-type,
+.mission-container:last-of-type,
+.about-container:last-of-type,
+.contact-container:last-of-type,
+.bugs-container:last-of-type {
     margin-bottom: 28px;
 }
 
@@ -370,14 +406,14 @@ footer::before {
         width: 100%;
         height: auto;
     }
-    .game-container, .info-container, .roadmap-container {
+    .game-container, .info-container, .roadmap-container, .mission-container, .about-container, .contact-container, .bugs-container {
         padding: 15px;
     }
-    .info-container, .roadmap-container {
+    .info-container, .roadmap-container, .mission-container, .about-container, .contact-container, .bugs-container {
         padding-left: 24px;
         padding-right: 18px;
     }
-    .roadmap-container {
+    .roadmap-container, .mission-container, .about-container, .contact-container, .bugs-container {
         padding-left: 38px;
     }
     .content-container {
@@ -399,18 +435,26 @@ footer::before {
         height: 50px;
     }
     .info-container h2,
-    .roadmap-container h2 {
+    .roadmap-container h2,
+    .mission-container h2,
+    .about-container h2,
+    .contact-container h2,
+    .bugs-container h2 {
         font-size: 1.4rem;
     }
     .info-container, 
-    .roadmap-container {
+    .roadmap-container,
+    .mission-container,
+    .about-container,
+    .contact-container,
+    .bugs-container {
         font-size: 0.9rem;
     }
-    .info-container, .roadmap-container {
+    .info-container, .roadmap-container, .mission-container, .about-container, .contact-container, .bugs-container {
         padding-left: 12px;
         padding-right: 8px;
     }
-    .roadmap-container {
+    .roadmap-container, .mission-container, .about-container, .contact-container, .bugs-container {
         padding-left: 24px;
     }
 }
