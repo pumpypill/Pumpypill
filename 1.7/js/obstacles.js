@@ -298,43 +298,48 @@ export class Obstacles {
 
             // Draw top pipe with rug-like pattern
             if (pipe.top > 0) {
-                ctx.fillStyle = fillColor;
-                ctx.fillRect(pipe.x, 0, this.OBSTACLES.WIDTH, pipe.top + pipe.topHeight);
+                const topY = 0;
+                const topH = pipe.top + pipe.topHeight;
+                if (topH > 0) {
+                    ctx.fillStyle = fillColor;
+                    ctx.fillRect(pipe.x, topY, this.OBSTACLES.WIDTH, topH);
 
-                // Add rug-like pattern
-                this.drawRugPattern(ctx, pipe.x, 0, this.OBSTACLES.WIDTH, pipe.top + pipe.topHeight, pipe.type, hue);
+                    // Clip pattern strictly inside the rect so it cannot overlap shape
+                    this.drawPatternClipped(ctx, pipe.x, topY, this.OBSTACLES.WIDTH, topH, pipe.type, hue);
 
-                // Draw border/fringe for rug appearance
-                ctx.strokeStyle = strokeColor;
-                ctx.strokeRect(pipe.x, 0, this.OBSTACLES.WIDTH, pipe.top + pipe.topHeight);
+                    ctx.strokeStyle = strokeColor;
+                    ctx.strokeRect(pipe.x, topY, this.OBSTACLES.WIDTH, topH);
 
-                this.drawRugFringe(ctx, pipe.x, pipe.top + pipe.topHeight, this.OBSTACLES.WIDTH, hue);
+                    this.drawRugFringe(ctx, pipe.x, topY + topH, this.OBSTACLES.WIDTH, hue);
+                }
             }
 
             // Draw bottom pipe with rug-like pattern
             if (pipe.bottom < canvasHeight) {
-                const bottomHeight = canvasHeight - pipe.bottom + pipe.bottomHeight;
+                const bottomY = pipe.bottom - pipe.bottomHeight;
+                const bottomH = canvasHeight - bottomY;
+                if (bottomH > 0) {
+                    ctx.fillStyle = fillColor;
+                    ctx.fillRect(
+                        pipe.x,
+                        bottomY,
+                        this.OBSTACLES.WIDTH,
+                        bottomH
+                    );
 
-                ctx.fillStyle = fillColor;
-                ctx.fillRect(
-                    pipe.x,
-                    pipe.bottom - pipe.bottomHeight,
-                    this.OBSTACLES.WIDTH,
-                    bottomHeight
-                );
+                    // Clip pattern strictly inside the rect so it cannot overlap shape
+                    this.drawPatternClipped(ctx, pipe.x, bottomY, this.OBSTACLES.WIDTH, bottomH, pipe.type, hue);
 
-                this.drawRugPattern(ctx, pipe.x, pipe.bottom - pipe.bottomHeight,
-                    this.OBSTACLES.WIDTH, bottomHeight, pipe.type, hue);
+                    ctx.strokeStyle = strokeColor;
+                    ctx.strokeRect(
+                        pipe.x,
+                        bottomY,
+                        this.OBSTACLES.WIDTH,
+                        bottomH
+                    );
 
-                ctx.strokeStyle = strokeColor;
-                ctx.strokeRect(
-                    pipe.x,
-                    pipe.bottom - pipe.bottomHeight,
-                    this.OBSTACLES.WIDTH,
-                    bottomHeight
-                );
-
-                this.drawRugFringe(ctx, pipe.x, pipe.bottom - pipe.bottomHeight, this.OBSTACLES.WIDTH, hue, true);
+                    this.drawRugFringe(ctx, pipe.x, bottomY, this.OBSTACLES.WIDTH, hue, true);
+                }
             }
 
             // Reset alpha for next pipe
@@ -342,6 +347,26 @@ export class Obstacles {
         }
 
         // Restore context state
+        ctx.restore();
+    }
+
+    // Clip helper to keep design strictly within obstacle rectangle
+    drawPatternClipped(ctx, x, y, width, height, type, hue, inset = 1) {
+        if (width <= 0 || height <= 0) return;
+        ctx.save();
+        // Inset so strokes/borders remain clean
+        const clipX = x + inset;
+        const clipY = y + inset;
+        const clipW = Math.max(0, width - inset * 2);
+        const clipH = Math.max(0, height - inset * 2);
+
+        ctx.beginPath();
+        ctx.rect(clipX, clipY, clipW, clipH);
+        ctx.clip();
+
+        // Draw the selected pattern inside the clipped region only
+        this.drawRugPattern(ctx, clipX, clipY, clipW, clipH, type, hue);
+
         ctx.restore();
     }
 

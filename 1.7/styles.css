@@ -241,13 +241,27 @@ footer::before {
     to   { opacity: 1; transform: none;}
 }
 .info-container:hover {
-    box-shadow: 0 8px 32px 0 rgba(0, 212, 255, 0.18), 0 4px 16px rgba(0, 0, 0, 0.35);
+    box-shadow: none;
     border-left: 6px solid #a7f3d0; /* lighter mint on hover */
 }
 .info-container h2 {
     color: var(--color-accent);
     margin-top: 0;
     letter-spacing: 1px;
+}
+
+/* Remove glow behind specified containers */
+.info-container,
+.mission-container,
+.about-container,
+.contact-container,
+.bugs-container {
+    box-shadow: none;
+}
+
+/* Remove hover glow on Game Instructions card */
+.info-container:hover {
+    box-shadow: none;
 }
 
 /* Roadmap Container - Timeline Step */
@@ -384,6 +398,25 @@ footer::before {
     text-align: center;
     margin-bottom: 24px;
     font-size: 1.8rem;
+}
+
+/* Link styling: use mint accent and a deeper green on hover/focus */
+a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1.5px;
+    text-decoration-color: rgba(110, 231, 183, 0.7);
+}
+a:visited {
+    color: var(--color-accent);
+    text-decoration-color: rgba(110, 231, 183, 0.55);
+}
+a:hover,
+a:focus-visible {
+    color: #34d399; /* deeper mint used elsewhere in theme */
+    text-decoration-color: currentColor;
+    outline: none;
 }
 
 /* Responsive Adjustments */
