@@ -464,8 +464,8 @@ export class Obstacles {
                 ctx.fill();
             }
         }
-    }
-    
+    } // <-- ensure this closes drawOrientalRugPattern
+
     // Chevron/zigzag pattern
     drawChevronRugPattern(ctx, x, y, width, height, hue) {
         const patternHeight = 12;
