@@ -448,7 +448,7 @@ a:focus-visible {
 
 /* Override: headings white, body text light gray for mission/about/contact/bugs */
 .mission-container,
-.about-container,
+.about-container, 
 .contact-container,
 .bugs-container {
     color: #d4d9e2; /* very light gray text */
